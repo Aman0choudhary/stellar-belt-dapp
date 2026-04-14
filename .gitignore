@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Production
+dist/
+build/
+*.wasm
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Rust/Cargo
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Testing
+.nyc_output/
+coverage/
+
+# Misc
+.cache/
+.turbo/
+dist/
+*.tsbuildinfo
