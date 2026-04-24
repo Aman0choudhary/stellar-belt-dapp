@@ -118,6 +118,26 @@ pnpm build
 # Or: netlify deploy --prod --dir=dist
 ```
 
+## Live Demo
+
+- URL: `https://YOUR-APP-URL.vercel.app`
+- Status: `Add your real deployed URL after deploying`
+
+## Submission Screenshots
+
+Add these 4 screenshots to the repo and keep these file names:
+- `docs/screenshots/wallet-connected.png`
+- `docs/screenshots/balance-displayed.png`
+- `docs/screenshots/tx-success.png`
+- `docs/screenshots/tx-feedback.png`
+
+Then these README image links will render automatically:
+
+![Wallet connected state](docs/screenshots/wallet-connected.png)
+![Balance displayed](docs/screenshots/balance-displayed.png)
+![Successful testnet transaction](docs/screenshots/tx-success.png)
+![Transaction result feedback](docs/screenshots/tx-feedback.png)
+
 ## Troubleshooting
 
 ### "Freighter wallet not installed"
@@ -156,15 +176,22 @@ To contribute:
 
 ## Level 1 Submission Checklist
 
-- [x] Public GitHub repo created
-- [x] README.md with description and setup
-- [x] Freighter connects and disconnects
-- [x] XLM balance displayed from Horizon
-- [x] Send XLM transaction works on testnet
-- [x] Transaction hash shown with link to Stellar Expert
-- [x] Error states handled gracefully
-- [x] Clean UI with dark terminal aesthetic
-- [x] Mobile responsive design
+- [x] Public GitHub repository
+- [x] README includes project description
+- [x] README includes local setup instructions
+- [x] Freighter wallet setup on Stellar Testnet
+- [x] Wallet connect functionality implemented
+- [x] Wallet disconnect functionality implemented
+- [x] Balance fetch + clear UI display implemented
+- [x] XLM transaction on testnet implemented
+- [x] Transaction feedback implemented (success/failure + hash)
+- [x] Development standards covered (UI, wallet, balance, transaction, errors)
+- [ ] Live deployed app URL added in the `Live Demo` section
+- [x] Screenshot added: wallet connected state
+- [x] Screenshot added: balance displayed
+- [x] Screenshot added: successful testnet transaction
+- [x] Screenshot added: transaction result shown to user
+- [ ] Repository link submitted on Rise In before deadline
 
 ## License
 

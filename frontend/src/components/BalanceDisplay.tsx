@@ -4,30 +4,20 @@ interface BalanceDisplayProps {
   publicKey: string | null;
 }
 
-export default function BalanceDisplay({
-  balance,
-  loading,
-  publicKey,
-}: BalanceDisplayProps) {
+export default function BalanceDisplay({ balance, loading, publicKey }: BalanceDisplayProps) {
   if (!publicKey) {
-    return (
-      <div className="text-gray-500 font-mono text-sm">
-        Connect wallet to view balance
-      </div>
-    );
+    return <div style={{ fontSize: 13, color: "#666" }}>Connect wallet to view balance</div>;
   }
 
   return (
-    <div style={{ borderColor: '#00ff00', backgroundColor: '#1a1a1a' }} className="border rounded p-4">
-      <div className="text-gray-400 font-mono text-xs uppercase mb-2">
-        XLM Balance
-      </div>
+    <div style={{ padding: 20, borderRadius: 16, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>XLM Balance</div>
       {loading ? (
-        <div className="h-10 bg-gray-700 rounded animate-pulse" />
+        <div style={{ height: 40, borderRadius: 8, background: "linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.02) 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.5s infinite" }} />
       ) : (
-        <div style={{ color: '#00ff00' }} className="text-4xl font-mono font-bold">
+        <div style={{ fontSize: 32, fontWeight: 700, fontFamily: "var(--font-family-heading)", letterSpacing: "-1px", color: "#fff" }}>
           {balance === "Error" ? "—" : parseFloat(balance || "0").toFixed(2)}
-          <span className="text-xl ml-2">XLM</span>
+          <span style={{ fontSize: 16, fontWeight: 500, color: "#555", marginLeft: 8 }}>XLM</span>
         </div>
       )}
     </div>

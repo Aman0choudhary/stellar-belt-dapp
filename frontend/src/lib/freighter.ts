@@ -3,45 +3,37 @@ import {
   isAllowed,
   setAllowed,
   getNetworkDetails,
+  getAddress,
   signTransaction,
 } from "@stellar/freighter-api";
 
-// Freighter types
-interface FreighterWindow {
-  freighter?: {
-    publicKey?: () => Promise<string>;
-    getPublicKey?: () => Promise<string>;
-  };
-}
-
-declare let window: FreighterWindow;
-
-async function getFreighterPublicKey(): Promise<string> {
-  // Try using window.freighter first
-  if (window.freighter) {
-    if (window.freighter.getPublicKey) {
-      return await window.freighter.getPublicKey();
-    }
-    if (window.freighter.publicKey) {
-      return await window.freighter.publicKey();
-    }
-  }
-  throw new Error("Could not get public key from Freighter");
-}
-
 export async function connectFreighter(): Promise<string> {
-  const connected = await isConnected();
+  const { isConnected: connected, error: connectedError } = await isConnected();
+  if (connectedError) throw new Error(connectedError.message ?? "Could not detect Freighter wallet.");
   if (!connected) throw new Error("Freighter wallet not installed.");
 
-  const allowed = await isAllowed();
-  if (!allowed) await setAllowed();
+  const { isAllowed: allowed, error: allowedError } = await isAllowed();
+  if (allowedError) throw new Error(allowedError.message ?? "Could not check wallet permission.");
+  if (!allowed) {
+    const { isAllowed: granted, error: setAllowedError } = await setAllowed();
+    if (setAllowedError) {
+      throw new Error(setAllowedError.message ?? "Wallet connection was rejected.");
+    }
+    if (!granted) throw new Error("Wallet connection was not approved.");
+  }
 
-  const pubKey = await getFreighterPublicKey();
-  const networkDetails = await getNetworkDetails();
+  const { address, error: addressError } = await getAddress();
+  if (addressError) throw new Error(addressError.message ?? "Could not get public key from Freighter.");
+  if (!address) throw new Error("Could not get public key from Freighter.");
 
-  if (networkDetails.network !== "testnet") throw new Error("Please switch Freighter to Testnet.");
-  
-  return pubKey;
+  const { network, error: networkError } = await getNetworkDetails();
+  if (networkError) throw new Error(networkError.message ?? "Could not read Freighter network.");
+
+  if (network.toUpperCase() !== "TESTNET") {
+    throw new Error("Please switch Freighter to Testnet.");
+  }
+
+  return address;
 }
 
 export async function disconnectFreighter(): Promise<void> {
