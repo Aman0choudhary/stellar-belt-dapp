@@ -10,7 +10,9 @@ import {
 } from "@stellar/stellar-sdk";
 import { signTransaction } from "@stellar/freighter-api";
 
-const server = new Horizon.Server(import.meta.env.VITE_HORIZON_URL);
+const horizonUrl =
+  import.meta.env.VITE_HORIZON_URL || "https://horizon-testnet.stellar.org";
+const server = new Horizon.Server(horizonUrl);
 const networkPassphrase =
   import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE || Networks.TESTNET;
 

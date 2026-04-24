@@ -1,6 +1,8 @@
 import { Horizon } from "@stellar/stellar-sdk";
 
-const server = new Horizon.Server(import.meta.env.VITE_HORIZON_URL);
+const horizonUrl =
+  import.meta.env.VITE_HORIZON_URL || "https://horizon-testnet.stellar.org";
+const server = new Horizon.Server(horizonUrl);
 
 export async function getXLMBalance(publicKey: string): Promise<string> {
   const account = await server.loadAccount(publicKey);
