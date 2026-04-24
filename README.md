@@ -120,8 +120,8 @@ pnpm build
 
 ## Live Demo
 
-- URL: `https://YOUR-APP-URL.vercel.app`
-- Status: `Add your real deployed URL after deploying`
+- URL: https://stellar-belt-dapp.vercel.app/
+- Status: Live and accessible
 
 ## Submission Screenshots
 
@@ -186,7 +186,7 @@ To contribute:
 - [x] XLM transaction on testnet implemented
 - [x] Transaction feedback implemented (success/failure + hash)
 - [x] Development standards covered (UI, wallet, balance, transaction, errors)
-- [ ] Live deployed app URL added in the `Live Demo` section
+- [x] Live deployed app URL added in the `Live Demo` section
 - [x] Screenshot added: wallet connected state
 - [x] Screenshot added: balance displayed
 - [x] Screenshot added: successful testnet transaction
