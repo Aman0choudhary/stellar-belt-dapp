@@ -9,9 +9,11 @@ import BalanceDisplay from "./BalanceDisplay";
 import SendForm from "./SendForm";
 import CounterPanel from "./CounterPanel";
 import BountyCard from "./BountyCard";
+import BountyCardSkeleton from "./BountyCardSkeleton";
 import BountyForm from "./BountyForm";
 import ProofSubmitModal from "./ProofSubmitModal";
 import ActivityFeed from "./ActivityFeed";
+import { TX_STEP_LABELS, type TxStep } from "../hooks/useTxStatus";
 
 type FilterKey = "ALL" | "MY_POSTED" | "MY_CLAIMS" | "HISTORY";
 
@@ -323,6 +325,29 @@ export default function Dashboard({
                   </div>
                 ) : null}
 
+                {/* TX Progress Steps */}
+                {bounty.txStatus === "pending" && (
+                  <div className="tx-progress">
+                    {TX_STEP_LABELS.map((label, i) => {
+                      const stepIdx = i as TxStep;
+                      const isDone = bounty.txStep > stepIdx;
+                      const isActive = bounty.txStep === stepIdx;
+                      return (
+                        <>
+                          {i > 0 && <div className="tx-step-connector" />}
+                          <div
+                            key={i}
+                            className={`tx-step ${isActive ? "is-active" : ""} ${isDone ? "is-done" : ""}`}
+                          >
+                            <div className="tx-step-dot" />
+                            <span>{label}</span>
+                          </div>
+                        </>
+                      );
+                    })}
+                  </div>
+                )}
+
                 <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
                   <input
                     className="search-input"
@@ -348,7 +373,7 @@ export default function Dashboard({
                   {bounty.loading ? (
                     <div className="card-grid">
                       {Array.from({ length: 4 }).map((_, index) => (
-                        <div key={index} className="bountix-card skeleton-card" />
+                        <BountyCardSkeleton key={index} />
                       ))}
                     </div>
                   ) : filteredBounties.length > 0 ? (

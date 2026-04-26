@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { BountyItem } from "../lib/bountyContract";
+import Countdown from "./Countdown";
 
 interface BountyCardProps {
   bounty: BountyItem;
@@ -27,15 +28,7 @@ function addr(a: string | null): string {
   return `${a.slice(0, 4)}…${a.slice(-4)}`;
 }
 
-function deadlineStr(ts: number): string {
-  if (!ts) return "—";
-  const d = ts * 1000 - Date.now();
-  if (d <= 0) return "Expired";
-  const h = Math.floor(d / 3_600_000);
-  const days = Math.floor(h / 24);
-  if (days > 0) return `${days}d ${h % 24}h`;
-  return `${Math.max(1, Math.floor(d / 60_000))}m`;
-}
+// deadlineStr removed — using <Countdown> component instead
 
 /* ------------------------------------------------------------------ */
 /* Figure out the "next step" message and who needs to act             */
@@ -144,9 +137,7 @@ export default function BountyCard({
           {bounty.rewardXlm.toFixed(1)} XLM
         </span>
 
-        <span style={{ flexShrink: 0, color: "#888", fontSize: 12 }}>
-          {deadlineStr(bounty.deadline)}
-        </span>
+        <Countdown deadlineTs={bounty.deadline} />
 
         <span style={{ flexShrink: 0, fontSize: 10, color: "#555", transition: "transform 0.2s", transform: detailsOpen ? "rotate(180deg)" : "rotate(0)" }}>
           ▼
@@ -263,7 +254,7 @@ export default function BountyCard({
             </span>
             <span>
               <span style={{ color: "#888" }}>Deadline </span>
-              <span style={{ color: "#d9e9e1" }}>{deadlineStr(bounty.deadline)}</span>
+              <Countdown deadlineTs={bounty.deadline} />
             </span>
           </div>
         </div>

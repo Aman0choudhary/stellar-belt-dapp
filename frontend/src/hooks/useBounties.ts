@@ -14,6 +14,10 @@ import {
 import { parseError } from "../lib/errors";
 import { signWithKit } from "../lib/walletsKit";
 import { useTxStatus } from "./useTxStatus";
+import { getCache, setCache, invalidate } from "../lib/cache";
+
+const CACHE_KEY = "bounties:all";
+const CACHE_TTL = 15_000;
 
 export function useBounties(publicKey: string | null) {
   const [bounties, setBounties] = useState<BountyItem[]>([]);
@@ -33,12 +37,20 @@ export function useBounties(publicKey: string | null) {
       return;
     }
 
+    // Check cache first
+    const cached = getCache<BountyItem[]>(CACHE_KEY);
+    if (cached) {
+      setBounties(cached);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
       const items = await getAllBounties(publicKey);
       setBounties(items);
+      setCache(CACHE_KEY, items, CACHE_TTL);
     } catch (unknownError: unknown) {
       setError(parseError(unknownError).message);
     } finally {
@@ -72,6 +84,8 @@ export function useBounties(publicKey: string | null) {
     async (action: () => Promise<{ hash: string }>) => {
       const result = await tx.execute(action);
       if (result.ok) {
+        // Invalidate cache so next refresh re-fetches from chain
+        invalidate(CACHE_KEY);
         await refresh();
       }
       return result;
@@ -128,6 +142,7 @@ export function useBounties(publicKey: string | null) {
     txStatus: tx.status,
     txHash: tx.hash,
     txError: tx.error,
+    txStep: tx.step,
     resetTxStatus: tx.reset,
     refresh,
     ...actions,

@@ -155,6 +155,36 @@ Handled in the frontend:
 - [x] Verified contract-call transaction hash added to README
 - [x] Live demo redeployed
 - [x] Screenshots captured
+## Level 3 Checklist
+
+- [x] Loading skeletons on bounty cards while fetching
+- [x] Progress steps during transaction signing
+- [x] Countdown timer on every bounty card (live-updating)
+- [x] Balance caching with 10s TTL, invalidated after actions
+- [x] Bounty list caching with 15s TTL, invalidated after actions
+- [x] Hunter dashboard — my claims, my submissions, my earnings
+- [x] Poster dashboard — pending reviews, active bounties, history
+- [x] Separate `/my-dashboard` page with Hunter/Poster tabs
+- [x] 3 test suites (23 tests) passing — cache, errors, BountyCard
+- [ ] 1-minute demo video link in README
+- [x] Live demo deployed
+- [x] 3+ meaningful commits
+
+### Test Results
+
+```
+ ✓ src/tests/errors.test.ts (10 tests) 24ms
+ ✓ src/tests/cache.test.ts (5 tests) 87ms
+ ✓ src/tests/BountyCard.test.tsx (8 tests) 287ms
+
+ Test Files  3 passed (3)
+      Tests  23 passed (23)
+```
+
+### Demo Video
+
+<!-- Replace with your recorded demo video URL -->
+- Pending — record with Loom or OBS and add link here
 
 ## Notes
 

@@ -44,3 +44,4 @@ dist/
 *.tsbuildinfo
 .stellar/
 context.md
+.vercel
