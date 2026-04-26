@@ -11,7 +11,7 @@ import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
 
 export default function Home() {
-  const { publicKey, isConnecting, error, connect, disconnect } = useWallet();
+  const { publicKey, walletName, isConnecting, error, connect, disconnect } = useWallet();
   const { balance, loading } = useBalance(publicKey);
   const [refreshCounter, setRefreshCounter] = useState(0);
 
@@ -33,6 +33,7 @@ export default function Home() {
         <Features />
         <Dashboard
           publicKey={publicKey}
+          walletName={walletName}
           isConnecting={isConnecting}
           error={error}
           balance={balance}

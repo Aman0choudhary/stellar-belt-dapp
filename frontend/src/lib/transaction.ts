@@ -8,7 +8,8 @@ import {
   Horizon,
   StrKey,
 } from "@stellar/stellar-sdk";
-import { signTransaction } from "@stellar/freighter-api";
+import { parseWalletError } from "./errors";
+import { signWithKit } from "./walletsKit";
 
 const horizonUrl =
   import.meta.env.VITE_HORIZON_URL || "https://horizon-testnet.stellar.org";
@@ -102,15 +103,9 @@ function mapOperationCode(code?: string): string | null {
 }
 
 function formatTransactionError(error: unknown): string {
-  if (error instanceof Error) {
-    const message = error.message.toLowerCase();
-    if (
-      message.includes("rejected") ||
-      message.includes("declined") ||
-      message.includes("user declined")
-    ) {
-      return "Transaction signing was cancelled in Freighter.";
-    }
+  const walletError = parseWalletError(error);
+  if (walletError.type !== "UNKNOWN") {
+    return walletError.message;
   }
 
   const horizonError = getHorizonError(error);
@@ -208,16 +203,7 @@ export async function sendXLM(
     const tx = txBuilder.build();
     const xdr = tx.toXDR();
 
-    const result = await signTransaction(xdr, {
-      networkPassphrase,
-      address: fromPublicKey,
-    });
-
-    if (typeof result !== "string" && result.error) {
-      throw new Error(result.error.message ?? "Transaction signing was rejected.");
-    }
-
-    const signedXdrString = typeof result === "string" ? result : result.signedTxXdr;
+    const signedXdrString = await signWithKit(xdr, fromPublicKey);
     if (!signedXdrString) {
       throw new Error("Transaction signing failed.");
     }
