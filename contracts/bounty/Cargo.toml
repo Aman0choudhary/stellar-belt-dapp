@@ -11,6 +11,9 @@ doctest = false
 [dependencies]
 soroban-sdk = "22"
 
+[dev-dependencies]
+soroban-sdk = { version = "22", features = ["testutils"] }
+
 [profile.release]
 opt-level = "z"
 overflow-checks = true
@@ -20,3 +23,6 @@ debug-assertions = false
 panic = "abort"
 codegen-units = 1
 lto = true
+
+[profile.test]
+opt-level = 0
