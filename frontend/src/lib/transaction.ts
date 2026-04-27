@@ -179,7 +179,7 @@ export async function sendXLM(
       fee: BASE_FEE,
       networkPassphrase,
     })
-      .setTimeout(30);
+      .setTimeout(180);
 
     if (destinationExists) {
       txBuilder.addOperation(
@@ -209,9 +209,42 @@ export async function sendXLM(
     }
 
     const signedTx = TransactionBuilder.fromXDR(signedXdrString, networkPassphrase);
-    const submitResult = await server.submitTransaction(signedTx);
 
-    return { success: true, hash: submitResult.hash };
+    try {
+      const submitResult = await server.submitTransaction(signedTx);
+      return { success: true, hash: submitResult.hash };
+    } catch (submitError: unknown) {
+      // If we get tx_bad_seq, the account sequence was stale — retry once
+      const hErr = getHorizonError(submitError);
+      const txCode = hErr?.response?.data?.extras?.result_codes?.transaction;
+      if (txCode === "tx_bad_seq") {
+        // Rebuild with fresh sequence
+        const freshAccount = await server.loadAccount(fromPublicKey);
+        const retryBuilder = new TransactionBuilder(freshAccount, {
+          fee: BASE_FEE,
+          networkPassphrase,
+        }).setTimeout(180);
+
+        if (destinationExists) {
+          retryBuilder.addOperation(
+            Operation.payment({ destination, asset: Asset.native(), amount: transferAmount })
+          );
+        } else {
+          retryBuilder.addOperation(
+            Operation.createAccount({ destination, startingBalance: transferAmount })
+          );
+        }
+        if (memoText) retryBuilder.addMemo(Memo.text(memoText));
+
+        const retryTx = retryBuilder.build();
+        const retryXdr = retryTx.toXDR();
+        const retrySignedXdr = await signWithKit(retryXdr, fromPublicKey);
+        const retrySigned = TransactionBuilder.fromXDR(retrySignedXdr, networkPassphrase);
+        const retryResult = await server.submitTransaction(retrySigned);
+        return { success: true, hash: retryResult.hash };
+      }
+      throw submitError;
+    }
   } catch (error: unknown) {
     return { success: false, error: formatTransactionError(error) };
   }
