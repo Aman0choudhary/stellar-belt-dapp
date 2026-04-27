@@ -166,7 +166,7 @@ Handled in the frontend:
 - [x] Poster dashboard — pending reviews, active bounties, history
 - [x] Separate `/my-dashboard` page with Hunter/Poster tabs
 - [x] 3 test suites (23 tests) passing — cache, errors, BountyCard
-- [ ] 1-minute demo video link in README
+- [x] 1-minute demo video link in README
 - [x] Live demo deployed
 - [x] 3+ meaningful commits
 
@@ -183,8 +183,9 @@ Handled in the frontend:
 
 ### Demo Video
 
-<!-- Replace with your recorded demo video URL -->
-- Pending — record with Loom or OBS and add link here
+[![Bountix Demo](https://img.youtube.com/vi/CMUWSU80CB4/maxresdefault.jpg)](https://youtu.be/CMUWSU80CB4)
+
+▶️ **[Watch the full demo on YouTube](https://youtu.be/CMUWSU80CB4)**
 
 ## Notes
 
