@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface NavbarProps {
   publicKey: string | null;
@@ -10,6 +11,8 @@ interface NavbarProps {
 export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnect }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -27,6 +30,33 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
     { label: "FAQ", href: "#faq" },
     { label: "My Dashboard", href: "/my-dashboard" },
   ];
+
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      e.preventDefault();
+      setMobileMenuOpen(false);
+
+      // Route link (e.g. /my-dashboard)
+      if (href.startsWith("/")) {
+        navigate(href);
+        return;
+      }
+
+      // Hash link (e.g. #hero) — if we're not on home, navigate there first
+      if (location.pathname !== "/") {
+        navigate("/");
+        // Wait for home to render, then scroll to section
+        setTimeout(() => {
+          const el = document.querySelector(href);
+          el?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      } else {
+        const el = document.querySelector(href);
+        el?.scrollIntoView({ behavior: "smooth" });
+      }
+    },
+    [navigate, location.pathname]
+  );
 
   return (
     <nav id="navbar" style={{
@@ -46,7 +76,7 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
       }}>
         {/* Left — Logo */}
         <div style={{ justifySelf: "start" }}>
-          <a href="#hero" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+          <a href="/" onClick={(e) => handleNavClick(e, "#hero")} style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#050505", fontFamily: "var(--font-family-heading)" }}>S</div>
             <span style={{ fontSize: 20, fontWeight: 700, color: "#fff", fontFamily: "var(--font-family-heading)", letterSpacing: "-0.5px" }}>
               Stellar<span style={{ opacity: 0.4 }}>.</span>
@@ -57,7 +87,7 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
         {/* Center — Nav Links */}
         <div className="hidden md:flex" style={{ display: "flex", alignItems: "center", gap: 4, justifySelf: "center" }}>
           {navLinks.map((link) => (
-            <a key={link.label} href={link.href} style={{ padding: "8px 18px", fontSize: 14, fontWeight: 500, color: "#999", borderRadius: 8, transition: "all 0.2s ease" }}
+            <a key={link.label} href={link.href} onClick={(e) => handleNavClick(e, link.href)} style={{ padding: "8px 18px", fontSize: 14, fontWeight: 500, color: "#999", borderRadius: 8, transition: "all 0.2s ease" }}
               onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = "#999"; e.currentTarget.style.background = "transparent"; }}>
               {link.label}
@@ -92,7 +122,7 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
       {mobileMenuOpen && (
         <div className="md:hidden" style={{ background: "rgba(5,5,5,0.95)", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px" }}>
           {navLinks.map((link) => (
-            <a key={link.label} href={link.href} onClick={() => setMobileMenuOpen(false)} style={{ display: "block", padding: "12px 0", fontSize: 15, fontWeight: 500, color: "#999", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            <a key={link.label} href={link.href} onClick={(e) => handleNavClick(e, link.href)} style={{ display: "block", padding: "12px 0", fontSize: 15, fontWeight: 500, color: "#999", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               {link.label}
             </a>
           ))}
