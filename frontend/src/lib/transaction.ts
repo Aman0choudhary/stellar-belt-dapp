@@ -1,5 +1,4 @@
 import {
-  Networks,
   TransactionBuilder,
   BASE_FEE,
   Operation,
@@ -9,13 +8,12 @@ import {
   StrKey,
 } from "@stellar/stellar-sdk";
 import { parseWalletError } from "./errors";
-import { signWithKit } from "./walletsKit";
+import { signWithKit, NETWORK_PASSPHRASE } from "./walletsKit";
 
 const horizonUrl =
   import.meta.env.VITE_HORIZON_URL || "https://horizon-testnet.stellar.org";
 const server = new Horizon.Server(horizonUrl);
-const networkPassphrase =
-  import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE || Networks.TESTNET;
+const networkPassphrase = NETWORK_PASSPHRASE;
 
 interface HorizonResultCodes {
   transaction?: string;

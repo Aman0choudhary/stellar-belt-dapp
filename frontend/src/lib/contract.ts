@@ -1,18 +1,16 @@
 import {
   BASE_FEE,
   Contract,
-  Networks,
   TransactionBuilder,
   rpc,
   scValToNative,
 } from "@stellar/stellar-sdk";
 import { parseWalletError } from "./errors";
-import { signWithKit } from "./walletsKit";
+import { signWithKit, NETWORK_PASSPHRASE } from "./walletsKit";
 
 const rpcUrl =
   import.meta.env.VITE_STELLAR_RPC_URL || "https://soroban-testnet.stellar.org";
-const networkPassphrase =
-  import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE || Networks.TESTNET;
+const networkPassphrase = NETWORK_PASSPHRASE;
 const counterContractId = import.meta.env.VITE_COUNTER_CONTRACT_ID;
 
 const server = new rpc.Server(rpcUrl);
@@ -74,7 +72,7 @@ async function buildPreparedTx(
     networkPassphrase,
   })
     .addOperation(contract.call(methodName))
-    .setTimeout(30)
+    .setTimeout(180)
     .build();
 
   return server.prepareTransaction(tx);

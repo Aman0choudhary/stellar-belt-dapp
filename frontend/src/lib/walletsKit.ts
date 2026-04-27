@@ -11,8 +11,9 @@ export interface WalletConnection {
 }
 
 const SUPPORTED_WALLET_IDS = new Set(["freighter", "xbull", "lobstr"]);
-const networkPassphrase =
+export const NETWORK_PASSPHRASE =
   import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE || WalletKitNetworks.TESTNET;
+const networkPassphrase = NETWORK_PASSPHRASE;
 
 let isKitInitialized = false;
 

@@ -3,13 +3,13 @@ import {
   Address,
   BASE_FEE,
   Contract,
-  Networks,
   TransactionBuilder,
   nativeToScVal,
   rpc,
   scValToNative,
   type xdr,
 } from "@stellar/stellar-sdk";
+import { NETWORK_PASSPHRASE } from "./walletsKit";
 
 export type BountyStatus =
   | "OPEN"
@@ -47,8 +47,6 @@ export interface PostBountyInput {
 
 const RPC_URL =
   import.meta.env.VITE_STELLAR_RPC_URL || "https://soroban-testnet.stellar.org";
-const NETWORK_PASSPHRASE =
-  import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE || Networks.TESTNET;
 const BOUNTY_CONTRACT_ID = import.meta.env.VITE_BOUNTY_CONTRACT_ID;
 const READONLY_SOURCE =
   import.meta.env.VITE_READONLY_SOURCE ||
@@ -255,7 +253,7 @@ async function buildAndSend(
     networkPassphrase: NETWORK_PASSPHRASE,
   })
     .addOperation(contract.call(method, ...args))
-    .setTimeout(30)
+    .setTimeout(180)
     .build();
 
   const prepared = await server.prepareTransaction(tx);
