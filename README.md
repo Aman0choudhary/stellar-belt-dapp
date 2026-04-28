@@ -8,11 +8,17 @@ Bountix is a Stellar Testnet bounty board where posters lock XLM, hunters claim 
 
 **→ [https://stellar-belt-dapp.vercel.app](https://stellar-belt-dapp.vercel.app)**
 
-## 📱 Mobile Responsive
+## 📸 App Screenshots
 
-![Mobile View](docs/screenshots/level4-mobile-375.png)
+![Hero Page](docs/screenshots/hero%20page.jpeg)
 
-![Mobile Dashboard](docs/screenshots/level4-mobile-dashboard-375.png)
+![Reputation Badge](docs/screenshots/level4-reputation-badge.jpeg)
+
+![Bounty Board](docs/screenshots/Bounty%20board.jpeg)
+
+![Wallet Connected](docs/screenshots/wallet%20connected%20.jpeg)
+
+![Poster View](docs/screenshots/poster%20view.jpeg)
 
 ## ✅ CI/CD Pipeline
 
