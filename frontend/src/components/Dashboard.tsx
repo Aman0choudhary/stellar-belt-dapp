@@ -492,15 +492,15 @@ export default function Dashboard({
                   </div>
                 </div>
 
-                <div style={{ marginTop: 24 }}>
+                <div style={{ marginTop: 24, minWidth: 0 }}>
                   {bounty.loading ? (
-                    <div className="card-grid">
+                    <div className="card-grid dashboard-card-grid">
                       {Array.from({ length: 4 }).map((_, index) => (
                         <BountyCardSkeleton key={index} />
                       ))}
                     </div>
                   ) : filteredBounties.length > 0 ? (
-                    <div className="card-grid">
+                    <div className="card-grid dashboard-card-grid">
                       {filteredBounties.map((item) => (
                         <BountyCard
                           key={item.id}

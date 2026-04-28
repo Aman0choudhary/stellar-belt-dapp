@@ -11,7 +11,7 @@ export default function Hero() {
       <div className="animate-float" style={{ position: "absolute", top: "15%", right: "10%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
 
       {/* Content */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", maxWidth: 820, padding: "0 24px" }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", maxWidth: 820, width: "100%", padding: "0 24px", boxSizing: "border-box" }}>
         {/* Badge */}
         <div className="animate-fade-in-up" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 20px", borderRadius: 50, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", fontSize: 13, fontWeight: 500, color: "#999", marginBottom: 32, fontFamily: "var(--font-family-body)" }}>
           <span style={{ fontSize: 10 }}>✦</span>

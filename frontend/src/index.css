@@ -609,6 +609,20 @@ a {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
+.bounty-header-row,
+.bounty-header-meta {
+  min-width: 0;
+}
+
+.bounty-header-meta {
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.dashboard-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
 .bountix-card-top {
   justify-content: space-between;
   gap: 12px;
@@ -1303,6 +1317,10 @@ a {
     grid-template-columns: 1fr !important;
   }
 
+  .dashboard-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   .filter-row {
     overflow-x: auto;
     white-space: nowrap;
@@ -1361,6 +1379,17 @@ a {
     padding: 16px;
   }
 
+  .bounty-header-row {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .bounty-header-meta {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
   .min-reward-filter {
     width: 100%;
     justify-content: flex-start;
@@ -1381,6 +1410,10 @@ a {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
+  .dashboard-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr !important;
   }
@@ -1390,6 +1423,10 @@ a {
 @media (min-width: 1024px) {
   .card-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dashboard-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
   .dashboard-grid {

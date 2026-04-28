@@ -17,10 +17,10 @@ const socialLinks = [
 
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const [ref, visible] = useScrollReveal(0.1);
+  const [ref] = useScrollReveal(0.1);
 
   return (
-    <footer ref={ref} style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(17,17,17,0.2) 100%)", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)", transition: "all 0.8s ease" }}>
+    <footer ref={ref} className="scroll-reveal scroll-reveal--up" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(17,17,17,0.2) 100%)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "64px 24px 0" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1.5fr repeat(4, 1fr)", gap: 40, marginBottom: 48 }} className="footer-grid">
           <div>

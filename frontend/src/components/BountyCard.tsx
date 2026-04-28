@@ -26,15 +26,10 @@ const STATUS_LABELS: Record<BountyItem["status"], string> = {
 };
 
 function addr(a: string | null): string {
-  if (!a) return "—";
-  return `${a.slice(0, 4)}…${a.slice(-4)}`;
+  if (!a) return "-";
+  return `${a.slice(0, 4)}...${a.slice(-4)}`;
 }
 
-// deadlineStr removed — using <Countdown> component instead
-
-/* ------------------------------------------------------------------ */
-/* Figure out the "next step" message and who needs to act             */
-/* ------------------------------------------------------------------ */
 function getNextStep(
   bounty: BountyItem,
   isPoster: boolean,
@@ -42,22 +37,87 @@ function getNextStep(
 ): { text: string; color: string; bg: string; border: string } | null {
   switch (bounty.status) {
     case "OPEN":
-      if (isPoster) return { text: "⏳ Waiting for a hunter to claim", color: "#fde68a", bg: "rgba(250,204,21,0.06)", border: "rgba(250,204,21,0.15)" };
-      return { text: "Available to claim", color: "#86efac", bg: "rgba(74,222,128,0.06)", border: "rgba(74,222,128,0.15)" };
+      if (isPoster) {
+        return {
+          text: "Waiting for a hunter to claim",
+          color: "#fde68a",
+          bg: "rgba(250,204,21,0.06)",
+          border: "rgba(250,204,21,0.15)",
+        };
+      }
+      return {
+        text: "Available to claim",
+        color: "#86efac",
+        bg: "rgba(74,222,128,0.06)",
+        border: "rgba(74,222,128,0.15)",
+      };
     case "CLAIMED":
-      if (isHunter) return { text: "🔒 You claimed this — submit your proof below", color: "#fbbf24", bg: "rgba(250,204,21,0.08)", border: "rgba(250,204,21,0.2)" };
-      if (isPoster) return { text: `🔒 Claimed by ${addr(bounty.hunter)} — waiting for proof submission`, color: "#fde68a", bg: "rgba(250,204,21,0.06)", border: "rgba(250,204,21,0.15)" };
-      return { text: `🔒 Claimed by ${addr(bounty.hunter)}`, color: "#fde68a", bg: "rgba(250,204,21,0.06)", border: "rgba(250,204,21,0.15)" };
+      if (isHunter) {
+        return {
+          text: "You claimed this. Submit your proof below",
+          color: "#fbbf24",
+          bg: "rgba(250,204,21,0.08)",
+          border: "rgba(250,204,21,0.2)",
+        };
+      }
+      if (isPoster) {
+        return {
+          text: `Claimed by ${addr(bounty.hunter)}. Waiting for proof submission`,
+          color: "#fde68a",
+          bg: "rgba(250,204,21,0.06)",
+          border: "rgba(250,204,21,0.15)",
+        };
+      }
+      return {
+        text: `Claimed by ${addr(bounty.hunter)}`,
+        color: "#fde68a",
+        bg: "rgba(250,204,21,0.06)",
+        border: "rgba(250,204,21,0.15)",
+      };
     case "SUBMITTED":
-      if (isPoster) return { text: "📋 Proof submitted — review and approve or reject below", color: "#93c5fd", bg: "rgba(96,165,250,0.08)", border: "rgba(96,165,250,0.2)" };
-      if (isHunter) return { text: "📋 Proof submitted — waiting for poster review", color: "#93c5fd", bg: "rgba(96,165,250,0.06)", border: "rgba(96,165,250,0.15)" };
-      return { text: "📋 Proof under review", color: "#93c5fd", bg: "rgba(96,165,250,0.06)", border: "rgba(96,165,250,0.15)" };
+      if (isPoster) {
+        return {
+          text: "Proof submitted. Review and approve or reject below",
+          color: "#93c5fd",
+          bg: "rgba(96,165,250,0.08)",
+          border: "rgba(96,165,250,0.2)",
+        };
+      }
+      if (isHunter) {
+        return {
+          text: "Proof submitted. Waiting for poster review",
+          color: "#93c5fd",
+          bg: "rgba(96,165,250,0.06)",
+          border: "rgba(96,165,250,0.15)",
+        };
+      }
+      return {
+        text: "Proof under review",
+        color: "#93c5fd",
+        bg: "rgba(96,165,250,0.06)",
+        border: "rgba(96,165,250,0.15)",
+      };
     case "APPROVED":
-      return { text: "✅ Completed — reward paid to hunter", color: "#86efac", bg: "rgba(74,222,128,0.06)", border: "rgba(74,222,128,0.15)" };
+      return {
+        text: "Completed. Reward paid to hunter",
+        color: "#86efac",
+        bg: "rgba(74,222,128,0.06)",
+        border: "rgba(74,222,128,0.15)",
+      };
     case "REJECTED":
-      return { text: "❌ Submission rejected — bounty re-opened", color: "#fca5a5", bg: "rgba(248,113,113,0.06)", border: "rgba(248,113,113,0.15)" };
+      return {
+        text: "Submission rejected. Bounty re-opened",
+        color: "#fca5a5",
+        bg: "rgba(248,113,113,0.06)",
+        border: "rgba(248,113,113,0.15)",
+      };
     case "CANCELLED":
-      return { text: "🚫 Cancelled by poster", color: "#fca5a5", bg: "rgba(248,113,113,0.06)", border: "rgba(248,113,113,0.15)" };
+      return {
+        text: "Cancelled by poster",
+        color: "#fca5a5",
+        bg: "rgba(248,113,113,0.06)",
+        border: "rgba(248,113,113,0.15)",
+      };
     default:
       return null;
   }
@@ -81,7 +141,6 @@ export default function BountyCard({
 
   const nextStep = getNextStep(bounty, isPoster, isHunter);
 
-  // Actions that should be visible
   const canClaim = bounty.status === "OPEN" && !!pk && !isPoster;
   const canCancel = bounty.status === "OPEN" && isPoster;
   const canSubmitProof = bounty.status === "CLAIMED" && isHunter;
@@ -89,64 +148,67 @@ export default function BountyCard({
   const hasActions = canClaim || canCancel || canSubmitProof || canApproveReject;
 
   return (
-    <article className="bountix-card" style={{ padding: 16, gap: 0 }}>
-
-      {/* ── ROW 1: Status + Title + Reward + Deadline ── */}
+    <article className="bountix-card" style={{ padding: 16, gap: 0, minWidth: 0, width: "100%", overflow: "hidden" }}>
       <div
+        className="bounty-header-row"
         style={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) auto",
           alignItems: "center",
           gap: 10,
           cursor: "pointer",
+          minWidth: 0,
         }}
         onClick={() => setDetailsOpen((v) => !v)}
       >
-        <span
-          className={`status-badge status-${bounty.status.toLowerCase()}`}
-          style={{ fontSize: 11, padding: "3px 8px", flexShrink: 0 }}
-        >
-          {STATUS_LABELS[bounty.status]}
-        </span>
-
-        {/* Role tag */}
-        {isPoster && (
-          <span style={{ fontSize: 10, color: "#7dd3a9", background: "rgba(125,211,169,0.1)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>
-            You posted
+        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+          <span
+            className={`status-badge status-${bounty.status.toLowerCase()}`}
+            style={{ fontSize: 11, padding: "3px 8px", flexShrink: 0 }}
+          >
+            {STATUS_LABELS[bounty.status]}
           </span>
-        )}
-        {isHunter && (
-          <span style={{ fontSize: 10, color: "#fbbf24", background: "rgba(250,204,21,0.1)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>
-            You claimed
+
+          {isPoster && (
+            <span style={{ fontSize: 10, color: "#7dd3a9", background: "rgba(125,211,169,0.1)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>
+              You posted
+            </span>
+          )}
+          {isHunter && (
+            <span style={{ fontSize: 10, color: "#fbbf24", background: "rgba(250,204,21,0.1)", padding: "2px 6px", borderRadius: 4, flexShrink: 0 }}>
+              You claimed
+            </span>
+          )}
+
+          <span
+            style={{
+              flex: 1,
+              minWidth: 0,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            {bounty.title}
           </span>
-        )}
+        </div>
 
-        <span
-          style={{
-            flex: 1,
-            minWidth: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            color: "#fff",
-            fontSize: 14,
-            fontWeight: 600,
-          }}
-        >
-          {bounty.title}
-        </span>
+        <div className="bounty-header-meta" style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+          <span style={{ flexShrink: 0, color: "#7dd3a9", fontWeight: 700, fontSize: 14, fontFamily: "var(--font-family-heading)" }}>
+            {bounty.rewardXlm.toFixed(1)} XLM
+          </span>
 
-        <span style={{ flexShrink: 0, color: "#7dd3a9", fontWeight: 700, fontSize: 14, fontFamily: "var(--font-family-heading)" }}>
-          {bounty.rewardXlm.toFixed(1)} XLM
-        </span>
+          <Countdown deadlineTs={bounty.deadline} />
 
-        <Countdown deadlineTs={bounty.deadline} />
-
-        <span style={{ flexShrink: 0, fontSize: 10, color: "#555", transition: "transform 0.2s", transform: detailsOpen ? "rotate(180deg)" : "rotate(0)" }}>
-          ▼
-        </span>
+          <span style={{ flexShrink: 0, fontSize: 10, color: "#555", transition: "transform 0.2s", transform: detailsOpen ? "rotate(180deg)" : "rotate(0)" }}>
+            v
+          </span>
+        </div>
       </div>
 
-      {/* ── ROW 2: Next-step banner (ALWAYS visible) ── */}
       {nextStep && (
         <div
           style={{
@@ -164,7 +226,6 @@ export default function BountyCard({
         </div>
       )}
 
-      {/* ── ROW 3: Action buttons (ALWAYS visible when user has actions) ── */}
       {hasActions && (
         <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
           {canClaim && (
@@ -198,7 +259,7 @@ export default function BountyCard({
                 onClick={() => void onApprove(bounty.id)}
                 style={{ background: "#34d399", color: "#052012" }}
               >
-                ✓ Approve &amp; Pay
+                Approve and Pay
               </button>
               <button
                 className="btn-ghost"
@@ -206,14 +267,13 @@ export default function BountyCard({
                 onClick={() => void onReject(bounty.id)}
                 style={{ borderColor: "rgba(248,113,113,0.4)", color: "#fca5a5" }}
               >
-                ✕ Reject
+                Reject
               </button>
             </>
           )}
         </div>
       )}
 
-      {/* ── Proof link (always visible when exists) ── */}
       {bounty.proofLink && (
         <a
           className="inline-link"
@@ -222,11 +282,10 @@ export default function BountyCard({
           rel="noreferrer"
           style={{ fontSize: 12, marginTop: 8, display: "inline-block" }}
         >
-          📎 View submitted proof →
+          View submitted proof
         </a>
       )}
 
-      {/* ── EXPANDABLE: description + meta (click header to toggle) ── */}
       {detailsOpen && (
         <div
           style={{
@@ -265,7 +324,6 @@ export default function BountyCard({
             </span>
           </div>
 
-          {/* Dispute Panel */}
           <DisputePanel
             bountyId={bounty.id}
             bountyStatus={bounty.status}

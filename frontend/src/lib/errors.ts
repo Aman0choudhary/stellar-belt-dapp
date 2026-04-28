@@ -40,7 +40,7 @@ export function parseWalletError(error: unknown): WalletError {
   ) {
     return {
       type: "WALLET_NOT_FOUND",
-      message: "Wallet not found. Install or enable Freighter, xBull, or LOBSTR.",
+      message: "Wallet not found. Try using Albedo (works in-browser), or install Freighter, xBull, or LOBSTR.",
     };
   }
 
