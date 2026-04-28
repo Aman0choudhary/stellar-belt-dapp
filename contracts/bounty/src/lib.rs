@@ -1,7 +1,8 @@
 #![no_std]
 
 use soroban_sdk::{
-    contract, contractimpl, contracttype, symbol_short, token, Address, Env, String, Symbol, Vec,
+    contract, contractimpl, contracttype, symbol_short, token, vec, Address, Env, IntoVal, String,
+    Symbol, Vec,
 };
 
 #[contracttype]
@@ -10,6 +11,7 @@ pub enum DataKey {
     Counter,
     AllIds,
     Asset,
+    Reputation,
 }
 
 #[contracttype]
@@ -51,8 +53,11 @@ pub struct BountyContract;
 
 #[contractimpl]
 impl BountyContract {
-    pub fn __constructor(env: Env, asset: Address) {
+    pub fn __constructor(env: Env, asset: Address, reputation: Address) {
         env.storage().instance().set(&DataKey::Asset, &asset);
+        env.storage()
+            .instance()
+            .set(&DataKey::Reputation, &reputation);
         env.storage().instance().extend_ttl(100_000, 100_000);
     }
 
@@ -64,6 +69,24 @@ impl BountyContract {
             .expect("Asset contract not configured");
 
         token::Client::new(env, &asset)
+    }
+
+    fn reputation_contract(env: &Env) -> Address {
+        env.storage()
+            .instance()
+            .get(&DataKey::Reputation)
+            .expect("Reputation contract not configured")
+    }
+
+    fn reward_to_points(reward: i128) -> u32 {
+        let raw_points = reward / 10_000_000;
+        if raw_points <= 0 {
+            return 1;
+        }
+        if raw_points > u32::MAX as i128 {
+            return u32::MAX;
+        }
+        raw_points as u32
     }
 
     pub fn post_bounty(
@@ -173,6 +196,20 @@ impl BountyContract {
         let contract_address = env.current_contract_address();
         Self::asset_client(&env).transfer(&contract_address, &hunter, &bounty.reward);
 
+        let points = Self::reward_to_points(bounty.reward);
+        let reputation_contract = Self::reputation_contract(&env);
+        let caller = env.current_contract_address();
+        env.invoke_contract::<()>(
+            &reputation_contract,
+            &Symbol::new(&env, "award_points"),
+            vec![
+                &env,
+                caller.into_val(&env),
+                hunter.into_val(&env),
+                points.into_val(&env),
+            ],
+        );
+
         bounty.status = BountyStatus::Approved;
         env.storage().persistent().set(&DataKey::Bounty(bounty_id), &bounty);
 
@@ -255,11 +292,44 @@ impl BountyContract {
 mod test {
     use super::*;
     use soroban_sdk::testutils::{Address as _, Ledger};
-    use soroban_sdk::{token, Env};
+    use soroban_sdk::{contract, contractimpl, contracttype, token, Env};
 
-    fn setup_env() -> (Env, Address, Address, Address, BountyContractClient<'static>) {
+    #[contracttype]
+    enum RepDataKey {
+        Score(Address),
+    }
+
+    #[contract]
+    struct MockReputationContract;
+
+    #[contractimpl]
+    impl MockReputationContract {
+        pub fn award_points(env: Env, caller: Address, hunter: Address, points: u32) {
+            caller.require_auth();
+
+            let current: u32 = env
+                .storage()
+                .persistent()
+                .get(&RepDataKey::Score(hunter.clone()))
+                .unwrap_or(0);
+            let new_score = current + points;
+
+            env.storage()
+                .persistent()
+                .set(&RepDataKey::Score(hunter), &new_score);
+        }
+
+        pub fn get_score(env: Env, hunter: Address) -> u32 {
+            env.storage()
+                .persistent()
+                .get(&RepDataKey::Score(hunter))
+                .unwrap_or(0)
+        }
+    }
+
+    fn setup_env() -> (Env, Address, Address, Address, Address, BountyContractClient<'static>) {
         let env = Env::default();
-        env.mock_all_auths();
+        env.mock_all_auths_allowing_non_root_auth();
 
         // Deploy a SAC-style token for XLM simulation
         let admin = Address::generate(&env);
@@ -267,8 +337,10 @@ mod test {
         let token_address = token_contract.address();
         let token_admin = token::StellarAssetClient::new(&env, &token_address);
 
+        let reputation_contract = env.register(MockReputationContract, ());
+
         // Deploy the bounty contract
-        let bounty_contract = env.register(BountyContract, (&token_address,));
+        let bounty_contract = env.register(BountyContract, (&token_address, &reputation_contract));
         let client = BountyContractClient::new(&env, &bounty_contract);
 
         // Fund poster
@@ -280,12 +352,19 @@ mod test {
             li.timestamp = 1_000_000;
         });
 
-        (env, poster, token_address, bounty_contract, client)
+        (
+            env,
+            poster,
+            token_address,
+            reputation_contract,
+            bounty_contract,
+            client,
+        )
     }
 
     #[test]
     fn test_post_bounty() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
 
         let id = client.post_bounty(
             &poster,
@@ -307,7 +386,7 @@ mod test {
 
     #[test]
     fn test_claim_bounty() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
         let hunter = Address::generate(&env);
 
         client.post_bounty(
@@ -327,7 +406,7 @@ mod test {
 
     #[test]
     fn test_submit_proof() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
         let hunter = Address::generate(&env);
 
         client.post_bounty(
@@ -350,9 +429,10 @@ mod test {
 
     #[test]
     fn test_approve_bounty_pays_hunter() {
-        let (env, poster, token_address, _, client) = setup_env();
+        let (env, poster, token_address, reputation_contract, _, client) = setup_env();
         let hunter = Address::generate(&env);
         let token = token::Client::new(&env, &token_address);
+        let reputation = MockReputationContractClient::new(&env, &reputation_contract);
 
         client.post_bounty(
             &poster,
@@ -375,6 +455,9 @@ mod test {
         let bounty = client.get_bounty(&1);
         assert_eq!(bounty.status, BountyStatus::Approved);
 
+        let expected_points = BountyContract::reward_to_points(100_000_000_i128);
+        assert_eq!(reputation.get_score(&hunter), expected_points);
+
         // Hunter should have received the reward
         let hunter_balance_after = token.balance(&hunter);
         assert_eq!(hunter_balance_after - hunter_balance_before, 100_000_000);
@@ -382,7 +465,7 @@ mod test {
 
     #[test]
     fn test_reject_bounty_reopens() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
         let hunter = Address::generate(&env);
 
         client.post_bounty(
@@ -407,7 +490,7 @@ mod test {
 
     #[test]
     fn test_cancel_bounty_refunds_poster() {
-        let (env, poster, token_address, _, client) = setup_env();
+        let (env, poster, token_address, _, _, client) = setup_env();
         let token = token::Client::new(&env, &token_address);
         let poster_balance_before = token.balance(&poster);
 
@@ -433,7 +516,7 @@ mod test {
 
     #[test]
     fn test_get_all_bounties() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
 
         client.post_bounty(
             &poster,
@@ -457,7 +540,7 @@ mod test {
     #[test]
     #[should_panic(expected = "Bounty not open")]
     fn test_cannot_claim_already_claimed() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
         let hunter1 = Address::generate(&env);
         let hunter2 = Address::generate(&env);
 
@@ -475,7 +558,7 @@ mod test {
     #[test]
     #[should_panic(expected = "Can only cancel open bounties")]
     fn test_cannot_cancel_claimed() {
-        let (env, poster, _, _, client) = setup_env();
+        let (env, poster, _, _, _, client) = setup_env();
         let hunter = Address::generate(&env);
 
         client.post_bounty(
@@ -491,7 +574,7 @@ mod test {
 
     #[test]
     fn test_full_lifecycle() {
-        let (env, poster, token_address, _, client) = setup_env();
+        let (env, poster, token_address, _, _, client) = setup_env();
         let hunter = Address::generate(&env);
         let token = token::Client::new(&env, &token_address);
 
