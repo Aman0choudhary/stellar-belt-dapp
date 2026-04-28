@@ -63,4 +63,12 @@ jobs:
       - name: Build
         run: |
           cd frontend
-          pnpm build
+          npx vite build
+        env:
+          VITE_STELLAR_NETWORK: TESTNET
+          VITE_STELLAR_RPC_URL: https://soroban-testnet.stellar.org
+          VITE_STELLAR_NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
+          VITE_HORIZON_URL: https://horizon-testnet.stellar.org
+          VITE_BOUNTY_CONTRACT_ID: CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
+          VITE_REPUTATION_CONTRACT_ID: CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
+          VITE_DISPUTE_CONTRACT_ID: CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
