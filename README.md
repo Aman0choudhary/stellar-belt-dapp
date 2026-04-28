@@ -1,63 +1,66 @@
 # Bountix - Decentralized Bounty Board on Stellar
 
-Bountix is a Stellar Testnet bounty board where posters lock XLM, hunters claim work, submit proof, and get paid when the poster approves.
+![CI](https://github.com/Aman0choudhary/stellar-belt-dapp/actions/workflows/ci.yml/badge.svg?branch=main)
+
+Bountix is a Stellar Testnet bounty board where posters lock XLM, hunters claim tasks, submit proof, and get paid on approval.
+
+## Live Demo
+
+- https://stellar-belt-dapp.vercel.app/
 
 ## Level Status
 
-Current target: Level 2 (Yellow Belt) ✅ Complete
+Current focus: Level 4 (Blue Belt)
 
-Implemented:
-- StellarWalletsKit multi-wallet connect flow
-- Bounty board UI with stats, filters, search, posting flow, proof submission, and role-aware actions
-- Soroban bounty contract with escrow-oriented bounty lifecycle deployed on Testnet
-- Live contract event polling feed
-- Transaction status feedback and error handling
-- Bounty card with always-visible next-step indicators and action buttons
+Implemented so far:
+- Level 2 core bounty lifecycle
+- Level 3 caching, tests, dashboard, countdown, skeleton loaders
+- Level 4 reputation + dispute contracts, dispute UI, search/filter/sort, responsive polish, CI/CD workflow
 
-## What Bountix Does
+## Contract Addresses (Testnet)
 
-1. Poster posts a bounty and locks XLM in the contract
-2. Hunter claims the bounty
-3. Hunter submits a proof link
-4. Poster approves to release XLM, or rejects to reopen the bounty
+- Bounty Contract: `CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G`
+- Reputation Contract: `CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C`
+- Dispute Contract: `CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR`
 
-Statuses:
+Explorer links:
+- https://stellar.expert/explorer/testnet/contract/CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
+- https://stellar.expert/explorer/testnet/contract/CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
+- https://stellar.expert/explorer/testnet/contract/CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
 
-`OPEN -> CLAIMED -> SUBMITTED -> APPROVED / REJECTED / CANCELLED / EXPIRED`
+## CI/CD
 
-## Tech Stack
+Workflow file: `.github/workflows/ci.yml`
 
-- React + Vite + TypeScript
-- Tailwind CSS
-- Soroban SDK (Rust)
-- `@stellar/stellar-sdk`
-- `@creit.tech/stellar-wallets-kit`
+Pipeline jobs:
+- Frontend install, test, and build
+- Soroban contract builds (bounty, reputation, dispute)
+- Auto deploy to Vercel on push to `main` (requires Vercel secrets)
 
-## Project Structure
+Required GitHub secrets:
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
 
-```text
-contracts/
-  bounty/
-  counter/
-frontend/
-  src/
-    components/
-    hooks/
-    lib/
-    pages/
-docs/
-```
+## UI and Responsiveness
 
-## Local Setup
+- Mobile-first improvements for 375px and up are included in `frontend/src/index.css`
+- Horizontal-safe filter rows and pool table behavior on small screens
+- Scroll-reveal animation is temporarily disabled for rendering stability
 
-### Prerequisites
+## Screenshots
 
-- Node.js 18+
-- pnpm
-- Freighter, xBull, or LOBSTR wallet on Stellar Testnet
-- Rust and Stellar CLI for contract build/deploy
+Located in `docs/screenshots/`:
+- `wallet-connected.png`
+- `balance-displayed.png`
+- `tx-success.png`
+- `activity-feed.png`
+- `bounty-board0.png`
+- `bounty-board1.png`
+- `level4-mobile-375.png`
+- `level4-mobile-dashboard-375.png`
 
-### Frontend
+## Frontend Setup
 
 ```bash
 cd frontend
@@ -66,9 +69,7 @@ cp .env.example .env
 pnpm dev
 ```
 
-### Environment Variables
-
-Set these in `frontend/.env`:
+## Environment Variables
 
 ```env
 VITE_STELLAR_NETWORK=TESTNET
@@ -76,118 +77,29 @@ VITE_STELLAR_RPC_URL=https://soroban-testnet.stellar.org
 VITE_STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015
 VITE_HORIZON_URL=https://horizon-testnet.stellar.org
 VITE_BOUNTY_CONTRACT_ID=CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
-VITE_REPUTATION_CONTRACT_ID=
-VITE_DISPUTE_CONTRACT_ID=
-VITE_COUNTER_CONTRACT_ID=
+VITE_REPUTATION_CONTRACT_ID=CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
+VITE_DISPUTE_CONTRACT_ID=CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
 ```
 
-## Contract Build and Deploy
+## Level 4 Checklist
 
-Build the Level 2 bounty contract:
+- [x] Dispute contract in repo
+- [x] Reputation contract in repo
+- [x] Inter-contract award points call in bounty approve flow
+- [x] Reputation score display in UI
+- [x] Dispute raise + validator vote UI
+- [x] Search + filter + sort + min reward controls
+- [x] CI workflow configured
+- [x] Vercel auto deploy job configured for `main`
+- [x] Mobile responsive updates (375px support)
+- [x] All 3 contract addresses documented in README
+- [x] Screenshot section updated
 
-```bash
-cd contracts/bounty
-stellar contract build
-```
-
-Get the native XLM asset contract id on testnet:
-
-```bash
-stellar contract id asset --network testnet --asset native
-```
-
-Deploy the bounty contract and pass the native asset contract id to the constructor:
-
-```bash
-stellar contract deploy \
-  --wasm target/wasm32v1-none/release/bounty.wasm \
-  --source deployer \
-  --network testnet \
-  -- \
-  --asset <NATIVE_XLM_ASSET_CONTRACT_ID>
-```
-
-After deployment, add the returned contract id to `frontend/.env` as `VITE_BOUNTY_CONTRACT_ID`.
-
-## Wallet Support
-
-Via StellarWalletsKit:
-- Freighter
-- xBull
-- LOBSTR
-
-## Error Handling
-
-Handled in the frontend:
-- Wallet not found
-- User rejected request
-- Insufficient XLM balance
-
-## Live Demo
-
-- https://stellar-belt-dapp.vercel.app/
-
-## Deployed Contract
-
-- Bounty Contract: `CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G`
-- Network: Stellar Testnet
-- Explorer: https://stellar.expert/explorer/testnet/contract/CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
-- Native XLM Asset Contract: `CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC`
-
-## Transaction Hash
-
-- WASM upload: `6102b16b943e0e49b4ed9b47b706b937da8c7e2320ad903112985073525b7194`
-- Contract deploy: `2ed9b074072e3588623fc8b2eba8f2fb555ea7873c1a09981de8169af1613dfb`
-- Explorer:
-  - https://stellar.expert/explorer/testnet/tx/6102b16b943e0e49b4ed9b47b706b937da8c7e2320ad903112985073525b7194
-  - https://stellar.expert/explorer/testnet/tx/2ed9b074072e3588623fc8b2eba8f2fb555ea7873c1a09981de8169af1613dfb
-
-## Level 2 Checklist
-
-- [x] StellarWalletsKit integrated in frontend
-- [x] Bounty board UI implemented
-- [x] Post, claim, submit, approve, reject, cancel flows wired in frontend
-- [x] Error states surfaced in UI
-- [x] Transaction status feedback implemented
-- [x] Activity feed polling implemented
-- [x] Bounty contract built and deployed
-- [x] Contract address added to README
-- [x] Verified contract-call transaction hash added to README
-- [x] Live demo redeployed
-- [x] Screenshots captured
-## Level 3 Checklist
-
-- [x] Loading skeletons on bounty cards while fetching
-- [x] Progress steps during transaction signing
-- [x] Countdown timer on every bounty card (live-updating)
-- [x] Balance caching with 10s TTL, invalidated after actions
-- [x] Bounty list caching with 15s TTL, invalidated after actions
-- [x] Hunter dashboard — my claims, my submissions, my earnings
-- [x] Poster dashboard — pending reviews, active bounties, history
-- [x] Separate `/my-dashboard` page with Hunter/Poster tabs
-- [x] 3 test suites (23 tests) passing — cache, errors, BountyCard
-- [x] 1-minute demo video link in README
-- [x] Live demo deployed
-- [x] 3+ meaningful commits
-
-### Test Results
-
-```
- ✓ src/tests/errors.test.ts (10 tests) 24ms
- ✓ src/tests/cache.test.ts (5 tests) 87ms
- ✓ src/tests/BountyCard.test.tsx (8 tests) 287ms
-
- Test Files  3 passed (3)
-      Tests  23 passed (23)
-```
-
-### Demo Video
+## Demo Video
 
 [![Bountix Demo](https://img.youtube.com/vi/CMUWSU80CB4/maxresdefault.jpg)](https://youtu.be/CMUWSU80CB4)
 
-▶️ **[Watch the full demo on YouTube](https://youtu.be/CMUWSU80CB4)**
-
 ## Notes
 
-- This repo started as the Level 1 Stellar wallet dApp and is now being upgraded into Bountix following `bountix-plan.md`.
-- The current codebase is being completed one level at a time so each submission stage can stand on its own.
+- This project started as a Level 1 Stellar wallet app and evolved into Bountix.
+- Current branch contains in-progress Level 4 changes not yet fully merged into `main`.
