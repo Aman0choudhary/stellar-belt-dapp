@@ -18,6 +18,8 @@ Bountix is a Stellar Testnet bounty board where posters lock XLM, hunters claim 
 
 ![CI Badge](https://github.com/Aman0choudhary/stellar-belt-dapp/actions/workflows/ci.yml/badge.svg?branch=main)
 
+![CI Passed](docs/screenshots/CI-passed.png)
+
 Pipeline: `.github/workflows/ci.yml`
 
 | Job | Description |
