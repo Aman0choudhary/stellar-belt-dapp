@@ -189,13 +189,19 @@ export default function Dashboard({
         />
         <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "start" }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1.6fr) minmax(340px, 1fr)",
+              gap: 48,
+              alignItems: "start",
+            }}
             className="dashboard-grid"
           >
             <div
               ref={leftRef}
               style={{
                 paddingTop: 20,
+                minWidth: 0,
               }}
             >
               <div
@@ -534,6 +540,8 @@ export default function Dashboard({
                 padding: 28,
                 position: "relative",
                 overflow: "hidden",
+                minWidth: 0,
+                width: "100%",
               }}
             >
               <div
