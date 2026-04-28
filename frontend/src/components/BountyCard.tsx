@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { BountyItem } from "../lib/bountyContract";
 import Countdown from "./Countdown";
+import DisputePanel from "./DisputePanel";
+import ReputationBadge from "./ReputationBadge";
 
 interface BountyCardProps {
   bounty: BountyItem;
@@ -247,6 +249,11 @@ export default function BountyCard({
             <span>
               <span style={{ color: "#888" }}>Hunter </span>
               <span style={{ color: "#fff", fontFamily: "monospace" }} title={bounty.hunter ?? ""}>{addr(bounty.hunter)}</span>
+              {bounty.hunter && (
+                <span style={{ marginLeft: 6 }}>
+                  <ReputationBadge address={bounty.hunter} size="sm" />
+                </span>
+              )}
             </span>
             <span>
               <span style={{ color: "#888" }}>Reward </span>
@@ -257,6 +264,16 @@ export default function BountyCard({
               <Countdown deadlineTs={bounty.deadline} />
             </span>
           </div>
+
+          {/* Dispute Panel */}
+          <DisputePanel
+            bountyId={bounty.id}
+            bountyStatus={bounty.status}
+            bountyPoster={bounty.poster}
+            bountyHunter={bounty.hunter}
+            publicKey={publicKey}
+            submittedAt={bounty.status === "SUBMITTED" ? bounty.createdAt : undefined}
+          />
         </div>
       )}
     </article>

@@ -15,6 +15,8 @@ import { parseError } from "../lib/errors";
 import { signWithKit } from "../lib/walletsKit";
 import { useTxStatus } from "./useTxStatus";
 import { getCache, setCache, invalidate } from "../lib/cache";
+import { configureReputationSigner } from "../lib/reputationContract";
+import { configureDisputeSigner } from "../lib/disputeContract";
 
 const CACHE_KEY = "bounties:all";
 const CACHE_TTL = 15_000;
@@ -28,6 +30,8 @@ export function useBounties(publicKey: string | null) {
 
   useEffect(() => {
     configureBountySigner(signWithKit);
+    configureReputationSigner(signWithKit);
+    configureDisputeSigner(signWithKit);
   }, []);
 
   const refresh = useCallback(async () => {
