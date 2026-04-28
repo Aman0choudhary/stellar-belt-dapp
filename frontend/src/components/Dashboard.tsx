@@ -16,6 +16,24 @@ import ActivityFeed from "./ActivityFeed";
 import { TX_STEP_LABELS, type TxStep } from "../hooks/useTxStatus";
 
 type FilterKey = "ALL" | "MY_POSTED" | "MY_CLAIMS" | "HISTORY";
+type SortKey = "NEWEST" | "REWARD_HIGH" | "DEADLINE_SOON";
+type CategoryKey = "ALL" | "SOCIAL" | "CODE" | "DESIGN" | "TESTING" | "CONTENT" | "OTHER";
+
+const SORT_OPTIONS: Array<{ key: SortKey; label: string }> = [
+  { key: "NEWEST", label: "Newest" },
+  { key: "REWARD_HIGH", label: "Highest Reward" },
+  { key: "DEADLINE_SOON", label: "Deadline Soon" },
+];
+
+const CATEGORIES: Array<{ key: CategoryKey; label: string }> = [
+  { key: "ALL", label: "All" },
+  { key: "SOCIAL", label: "Social" },
+  { key: "CODE", label: "Code" },
+  { key: "DESIGN", label: "Design" },
+  { key: "TESTING", label: "Testing" },
+  { key: "CONTENT", label: "Content" },
+  { key: "OTHER", label: "Other" },
+];
 
 interface DashboardProps {
   publicKey: string | null;
@@ -42,13 +60,16 @@ export default function Dashboard({
   onTxSuccess,
   refreshCounter,
 }: DashboardProps) {
-  const [leftRef, leftVis] = useScrollReveal(0.2);
-  const [rightRef, rightVis] = useScrollReveal(0.15);
+  const [leftRef] = useScrollReveal(0.2);
+  const [rightRef] = useScrollReveal(0.15);
   const bounty = useBounties(publicKey);
   const contractId = getBountyContractId();
   const counterContractId = getCounterContractId();
   const events = useContractEvents(contractId);
   const [activeFilter, setActiveFilter] = useState<FilterKey>("ALL");
+  const [sortBy, setSortBy] = useState<SortKey>("NEWEST");
+  const [category, setCategory] = useState<CategoryKey>("ALL");
+  const [minReward, setMinReward] = useState(0);
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [proofBounty, setProofBounty] = useState<BountyItem | null>(null);
@@ -57,7 +78,7 @@ export default function Dashboard({
     const query = search.trim().toLowerCase();
     const DEAD = new Set(["APPROVED", "CANCELLED", "EXPIRED"]);
 
-    return bounty.bounties.filter((item) => {
+    let results = bounty.bounties.filter((item) => {
       // "All" = everything that's still live (OPEN, CLAIMED, SUBMITTED, REJECTED)
       if (activeFilter === "ALL" && DEAD.has(item.status)) {
         return false;
@@ -76,6 +97,24 @@ export default function Dashboard({
         return false;
       }
 
+      // Category filter
+      if (category !== "ALL") {
+        const itemCategory = (item as BountyItem & { category?: string }).category?.toUpperCase() || "OTHER";
+        if (itemCategory !== category) {
+          // Also check if title contains category keyword
+          const titleLower = item.title.toLowerCase();
+          const catLower = category.toLowerCase();
+          if (!titleLower.includes(catLower)) {
+            return false;
+          }
+        }
+      }
+
+      // Min reward filter
+      if (minReward > 0 && item.rewardXlm < minReward) {
+        return false;
+      }
+
       if (!query) {
         return true;
       }
@@ -85,7 +124,23 @@ export default function Dashboard({
         item.description.toLowerCase().includes(query)
       );
     });
-  }, [activeFilter, bounty.bounties, publicKey, search]);
+
+    // Sort
+    switch (sortBy) {
+      case "REWARD_HIGH":
+        results.sort((a, b) => b.rewardXlm - a.rewardXlm);
+        break;
+      case "DEADLINE_SOON":
+        results.sort((a, b) => a.deadline - b.deadline);
+        break;
+      case "NEWEST":
+      default:
+        results.sort((a, b) => b.createdAt - a.createdAt);
+        break;
+    }
+
+    return results;
+  }, [activeFilter, bounty.bounties, publicKey, search, sortBy, category, minReward]);
 
   const stats = useMemo(() => {
     const totalPosted = bounty.bounties.reduce((sum, item) => sum + item.rewardXlm, 0);
@@ -139,11 +194,9 @@ export default function Dashboard({
           >
             <div
               ref={leftRef}
+              className="scroll-reveal scroll-reveal--left"
               style={{
                 paddingTop: 20,
-                opacity: leftVis ? 1 : 0,
-                transform: leftVis ? "translateX(0)" : "translateX(-40px)",
-                transition: "all 0.7s ease",
               }}
             >
               <div
@@ -348,14 +401,42 @@ export default function Dashboard({
                   </div>
                 )}
 
-                <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <div style={{ marginTop: 24, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
                   <input
                     className="search-input"
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    placeholder="Search bounties"
+                    placeholder="🔍 Search bounties..."
                     style={{ flex: "1 1 220px", minWidth: 220 }}
                   />
+                  <select
+                    className="sort-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as SortKey)}
+                  >
+                    {SORT_OPTIONS.map((opt) => (
+                      <option key={opt.key} value={opt.key}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Category filter pills */}
+                <div style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                  <span style={{ color: "#555", fontSize: 12, fontWeight: 600, marginRight: 4 }}>Category:</span>
+                  {CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.key}
+                      className={`filter-pill filter-pill--category ${category === cat.key ? "is-active" : ""}`}
+                      onClick={() => setCategory(cat.key)}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
                   <div className="filter-row" style={{ margin: 0 }}>
                     {filters.map((filter) => (
                       <button
@@ -366,6 +447,19 @@ export default function Dashboard({
                         {filter.label}
                       </button>
                     ))}
+                  </div>
+                  <div className="min-reward-filter" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <label style={{ color: "#777", fontSize: 12, whiteSpace: "nowrap" }}>Min XLM:</label>
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={5}
+                      value={minReward}
+                      onChange={(e) => setMinReward(Number(e.target.value))}
+                      className="reward-slider"
+                    />
+                    <span style={{ color: "#fff", fontSize: 12, minWidth: 30 }}>{minReward}</span>
                   </div>
                 </div>
 
@@ -410,6 +504,7 @@ export default function Dashboard({
 
             <div
               ref={rightRef}
+              className="scroll-reveal scroll-reveal--right scroll-reveal--delay-slow"
               style={{
                 background: "rgba(255,255,255,0.02)",
                 border: "1px solid rgba(255,255,255,0.06)",
@@ -417,9 +512,6 @@ export default function Dashboard({
                 padding: 28,
                 position: "relative",
                 overflow: "hidden",
-                opacity: rightVis ? 1 : 0,
-                transform: rightVis ? "translateX(0)" : "translateX(40px)",
-                transition: "all 0.7s ease 0.15s",
               }}
             >
               <div
