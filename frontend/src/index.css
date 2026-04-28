@@ -1468,3 +1468,57 @@ a {
     display: none;
   }
 }
+
+/* ===== Reputation Badge ===== */
+.reputation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-family-body);
+  white-space: nowrap;
+}
+
+.reputation-badge__emoji {
+  font-size: 14px;
+}
+
+.reputation-badge__tier {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.reputation-badge__score {
+  font-size: 11px;
+  color: #888;
+  font-family: monospace;
+}
+
+/* Size variants */
+.reputation-badge--sm {
+  padding: 2px 8px;
+  gap: 4px;
+}
+.reputation-badge--sm .reputation-badge__emoji { font-size: 12px; }
+.reputation-badge--sm .reputation-badge__tier { font-size: 11px; }
+.reputation-badge--sm .reputation-badge__score { font-size: 10px; }
+
+.reputation-badge--md {
+  padding: 6px 14px;
+  gap: 8px;
+}
+.reputation-badge--md .reputation-badge__emoji { font-size: 16px; }
+.reputation-badge--md .reputation-badge__tier { font-size: 13px; }
+.reputation-badge--md .reputation-badge__score { font-size: 12px; }
+
+.reputation-badge--lg {
+  padding: 8px 18px;
+  gap: 10px;
+}
+.reputation-badge--lg .reputation-badge__emoji { font-size: 20px; }
+.reputation-badge--lg .reputation-badge__tier { font-size: 15px; }
+.reputation-badge--lg .reputation-badge__score { font-size: 13px; }

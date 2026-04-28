@@ -13,6 +13,7 @@ import BountyCardSkeleton from "./BountyCardSkeleton";
 import BountyForm from "./BountyForm";
 import ProofSubmitModal from "./ProofSubmitModal";
 import ActivityFeed from "./ActivityFeed";
+import ReputationBadge from "./ReputationBadge";
 import { TX_STEP_LABELS, type TxStep } from "../hooks/useTxStatus";
 
 type FilterKey = "ALL" | "MY_POSTED" | "MY_CLAIMS" | "HISTORY";
@@ -310,6 +311,14 @@ export default function Dashboard({
                       Post bounties, claim work, submit proof, and follow contract activity
                       without changing the original dashboard feel.
                     </p>
+                    {publicKey && (
+                      <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
+                        <span style={{ fontSize: 12, color: "#666" }}>
+                          {publicKey.slice(0, 6)}...{publicKey.slice(-4)}
+                        </span>
+                        <ReputationBadge address={publicKey} size="md" showScore />
+                      </div>
+                    )}
                   </div>
 
                   {publicKey ? (
