@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "bounty",
+    "reputation",
+    "dispute",
+]
+resolver = "2"

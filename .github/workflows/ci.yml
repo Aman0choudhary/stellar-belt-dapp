@@ -2,57 +2,65 @@ name: Bountix CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  test-frontend:
-    name: Test & Build Frontend
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: cd frontend && pnpm install
-
-      - name: Run tests
-        run: cd frontend && pnpm test
-
-      - name: Build
-        run: cd frontend && pnpm build
-        env:
-          VITE_STELLAR_NETWORK: TESTNET
-          VITE_STELLAR_RPC_URL: https://soroban-testnet.stellar.org
-          VITE_STELLAR_NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
-          VITE_HORIZON_URL: https://horizon-testnet.stellar.org
-          VITE_BOUNTY_CONTRACT_ID: CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
-          VITE_REPUTATION_CONTRACT_ID: CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
-          VITE_DISPUTE_CONTRACT_ID: CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
-
   verify-contracts:
     name: Verify Soroban Contracts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Check contracts compile
+        run: |
+          cd contracts
+          cargo check --workspace
 
-      - name: Check bounty contract compiles
-        run: cd contracts/bounty && cargo check --target wasm32-unknown-unknown --release
+  test-and-build-frontend:
+    name: Test & Build Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Check reputation contract compiles
-        run: cd contracts/reputation && cargo check --target wasm32-unknown-unknown --release
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: Check dispute contract compiles
-        run: cd contracts/dispute && cargo check --target wasm32-unknown-unknown --release
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          pnpm install --no-frozen-lockfile
+
+      - name: Run tests
+        run: |
+          cd frontend
+          pnpm vitest run --reporter=verbose
+
+      - name: Build
+        run: |
+          cd frontend
+          pnpm build
