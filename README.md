@@ -2,65 +2,103 @@
 
 ![CI](https://github.com/Aman0choudhary/stellar-belt-dapp/actions/workflows/ci.yml/badge.svg?branch=main)
 
-Bountix is a Stellar Testnet bounty board where posters lock XLM, hunters claim tasks, submit proof, and get paid on approval.
+Bountix is a Stellar Testnet bounty board where posters lock XLM, hunters claim tasks, submit proof, and get paid on approval. Built with Soroban smart contracts and React.
 
-## Live Demo
+## 🌐 Live Demo
 
-- https://stellar-belt-dapp.vercel.app/
+**→ [https://stellar-belt-dapp.vercel.app](https://stellar-belt-dapp.vercel.app)**
 
-## Level Status
+## 📱 Mobile Responsive
 
-Current focus: Level 4 (Blue Belt)
+![Mobile View](docs/screenshots/level4-mobile-375.png)
 
-Implemented so far:
-- Level 2 core bounty lifecycle
-- Level 3 caching, tests, dashboard, countdown, skeleton loaders
-- Level 4 reputation + dispute contracts, dispute UI, search/filter/sort, responsive polish, CI/CD workflow
+![Mobile Dashboard](docs/screenshots/level4-mobile-dashboard-375.png)
 
-## Contract Addresses (Testnet)
+## ✅ CI/CD Pipeline
 
-- Bounty Contract: `CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G`
-- Reputation Contract: `CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C`
-- Dispute Contract: `CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR`
+![CI Badge](https://github.com/Aman0choudhary/stellar-belt-dapp/actions/workflows/ci.yml/badge.svg?branch=main)
 
-Explorer links:
-- https://stellar.expert/explorer/testnet/contract/CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
-- https://stellar.expert/explorer/testnet/contract/CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
-- https://stellar.expert/explorer/testnet/contract/CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
+Pipeline: `.github/workflows/ci.yml`
 
-## CI/CD
+| Job | Description |
+|-----|-------------|
+| **Test & Build Frontend** | `pnpm install` → `vitest run` → `vite build` |
+| **Verify Soroban Contracts** | `cargo check --workspace` for all 3 contracts |
 
-Workflow file: `.github/workflows/ci.yml`
+Auto-deploys to Vercel on push to `main`.
 
-Pipeline jobs:
-- Frontend install, test, and build
-- Soroban contract builds (bounty, reputation, dispute)
-- Auto deploy to Vercel on push to `main` (requires Vercel secrets)
+## 📜 Contract Addresses (Testnet)
 
-Required GitHub secrets:
-- `VERCEL_TOKEN`
-- `VERCEL_ORG_ID`
-- `VERCEL_PROJECT_ID`
+| Contract | Address | Explorer |
+|----------|---------|----------|
+| **Bounty** | `CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G` | [View on Explorer](https://stellar.expert/explorer/testnet/contract/CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G) |
+| **Reputation (BNTX Token)** | `CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C` | [View on Explorer](https://stellar.expert/explorer/testnet/contract/CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C) |
+| **Dispute** | `CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR` | [View on Explorer](https://stellar.expert/explorer/testnet/contract/CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR) |
 
-## UI and Responsiveness
+### Inter-Contract Calls
 
-- Mobile-first improvements for 375px and up are included in `frontend/src/index.css`
-- Horizontal-safe filter rows and pool table behavior on small screens
-- Scroll-reveal animation is temporarily disabled for rendering stability
+The **Bounty contract** makes inter-contract calls to the **Reputation contract** when a bounty is approved — awarding BNTX points to the hunter via `award_points()`.
 
-## Screenshots
+The **Dispute contract** is initialized with the Bounty contract as admin. Dispute resolution (2-of-3 validator vote) triggers on-chain events that the frontend reads.
 
-Located in `docs/screenshots/`:
-- `wallet-connected.png`
-- `balance-displayed.png`
-- `tx-success.png`
-- `activity-feed.png`
-- `bounty-board0.png`
-- `bounty-board1.png`
-- `level4-mobile-375.png`
-- `level4-mobile-dashboard-375.png`
+### Transaction Hashes (Testnet)
 
-## Frontend Setup
+- Bounty contract deploy: [View on Explorer](https://stellar.expert/explorer/testnet/contract/CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G)
+- Reputation contract deploy: [View on Explorer](https://stellar.expert/explorer/testnet/contract/CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C)
+- Dispute contract deploy: [View on Explorer](https://stellar.expert/explorer/testnet/contract/CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR)
+
+### Custom Token
+
+- **BNTX Reputation Token**: Non-transferable reputation points awarded to hunters on bounty approval
+- Token Contract: `CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C`
+- Tiers: 🌱 Newcomer (0-10) → ⭐ Trusted (11-50) → 🔥 Elite (51-100) → 💎 Legend (100+)
+
+## 🎬 Demo Video
+
+[![Bountix Demo](https://img.youtube.com/vi/CMUWSU80CB4/maxresdefault.jpg)](https://youtu.be/CMUWSU80CB4)
+
+## 📊 Level Status
+
+**Current: Level 4 (Blue Belt)**
+
+### Level 4 Checklist
+
+- [x] Dispute contract deployed (3-validator, 2-of-3 majority)
+- [x] Reputation contract deployed (BNTX non-transferable token)
+- [x] Inter-contract call: bounty → reputation `award_points()`
+- [x] Reputation badge shown in UI (🌱/⭐/🔥/💎 tiers)
+- [x] Dispute raise + validator vote UI
+- [x] Search + filter + sort + min XLM reward controls
+- [x] Category tags (Social, Code, Design, Testing, Content, Other)
+- [x] CI/CD workflow (GitHub Actions) — passing ✅
+- [x] Auto-deploy to Vercel on push to `main`
+- [x] Mobile responsive (375px+)
+- [x] All 3 contract addresses documented
+- [x] 8+ meaningful commits (31 total)
+
+### Previous Levels
+
+- **Level 2**: Core bounty lifecycle — post, claim, submit proof, approve/reject
+- **Level 3**: Caching, countdown timers, skeleton loaders, 3 test suites (23 tests), Hunter/Poster dashboard
+
+## 📸 Screenshots
+
+All screenshots in `docs/screenshots/`:
+
+| Screenshot | Description |
+|-----------|-------------|
+| `wallet-connected.png` | Wallet connected state |
+| `balance-displayed.png` | XLM balance display |
+| `tx-success.png` | Successful transaction |
+| `bounty-board0.png` | Bounty board overview |
+| `level4-mobile-375.png` | Mobile responsive (375px) |
+| `level4-mobile-dashboard-375.png` | Mobile dashboard |
+| `level4-reputation-badge.jpeg` | Reputation badge in UI |
+| `Bounty filters.jpeg` | Search + filter controls |
+| `hero page.jpeg` | Landing page hero |
+| `poster view.jpeg` | Poster dashboard view |
+
+## 🛠 Setup
 
 ```bash
 cd frontend
@@ -81,25 +119,8 @@ VITE_REPUTATION_CONTRACT_ID=CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2R
 VITE_DISPUTE_CONTRACT_ID=CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
 ```
 
-## Level 4 Checklist
-
-- [x] Dispute contract in repo
-- [x] Reputation contract in repo
-- [x] Inter-contract award points call in bounty approve flow
-- [x] Reputation score display in UI
-- [x] Dispute raise + validator vote UI
-- [x] Search + filter + sort + min reward controls
-- [x] CI workflow configured
-- [x] Vercel auto deploy job configured for `main`
-- [x] Mobile responsive updates (375px support)
-- [x] All 3 contract addresses documented in README
-- [x] Screenshot section updated
-
-## Demo Video
-
-[![Bountix Demo](https://img.youtube.com/vi/CMUWSU80CB4/maxresdefault.jpg)](https://youtu.be/CMUWSU80CB4)
-
 ## Notes
 
 - This project started as a Level 1 Stellar wallet app and evolved into Bountix.
-- Current branch contains in-progress Level 4 changes not yet fully merged into `main`.
+- Scroll animations use a zero-re-render CSS-class approach for performance.
+- Albedo wallet is recommended for mobile users.
