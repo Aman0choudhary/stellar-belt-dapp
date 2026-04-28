@@ -10,7 +10,6 @@ export interface WalletConnection {
   walletName: string;
 }
 
-const SUPPORTED_WALLET_IDS = new Set(["freighter", "xbull", "lobstr"]);
 export const NETWORK_PASSPHRASE =
   import.meta.env.VITE_STELLAR_NETWORK_PASSPHRASE || WalletKitNetworks.TESTNET;
 const networkPassphrase = NETWORK_PASSPHRASE;
@@ -38,9 +37,7 @@ function ensureKitInitialized(): void {
   }
 
   StellarWalletsKit.init({
-    modules: defaultModules({
-      filterBy: (module) => SUPPORTED_WALLET_IDS.has(module.productId),
-    }),
+    modules: defaultModules(),
     network: toWalletKitNetwork(networkPassphrase),
     authModal: {
       showInstallLabel: true,
