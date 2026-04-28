@@ -1,0 +1,24 @@
+# Dependencies and build artifacts
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+**/.cache
+
+# Rust / Soroban build output
+contracts/**/target
+**/*.rlib
+**/*.rmeta
+**/*.pdb
+
+# Local/dev metadata
+.git
+.github
+.stellar
+.vercel
+context.md
+screen.png
+
+# Docs assets not needed for runtime
+contracts/**/test_snapshots
+docs/screenshots

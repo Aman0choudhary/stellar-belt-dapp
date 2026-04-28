@@ -194,7 +194,6 @@ export default function Dashboard({
           >
             <div
               ref={leftRef}
-              className="scroll-reveal scroll-reveal--left"
               style={{
                 paddingTop: 20,
               }}
@@ -313,6 +312,30 @@ export default function Dashboard({
                     </button>
                   ) : null}
                 </div>
+
+                {!publicKey && (
+                  <div
+                    style={{
+                      marginTop: 16,
+                      padding: 14,
+                      borderRadius: 12,
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "rgba(255,255,255,0.02)",
+                    }}
+                  >
+                    <div style={{ marginBottom: 10, color: "#999", fontSize: 13 }}>
+                      Connect a wallet to post, claim, and submit proof.
+                    </div>
+                    <WalletButton
+                      publicKey={publicKey}
+                      walletName={walletName}
+                      isConnecting={isConnecting}
+                      error={error}
+                      onConnect={onConnect}
+                      onDisconnect={onDisconnect}
+                    />
+                  </div>
+                )}
 
                 <div
                   style={{
@@ -504,7 +527,6 @@ export default function Dashboard({
 
             <div
               ref={rightRef}
-              className="scroll-reveal scroll-reveal--right scroll-reveal--delay-slow"
               style={{
                 background: "rgba(255,255,255,0.02)",
                 border: "1px solid rgba(255,255,255,0.06)",
@@ -586,7 +608,7 @@ export default function Dashboard({
                 {counterContractId ? <CounterPanel publicKey={publicKey} /> : null}
               </div>
 
-              <div style={{ marginTop: 20 }}>
+              <div style={{ marginTop: 20 }} className="activity-feed-sidebar">
                 <ActivityFeed events={events} contractReady={!!contractId} />
               </div>
             </div>

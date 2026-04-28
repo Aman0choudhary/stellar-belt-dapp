@@ -60,18 +60,18 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
 
   return (
     <nav id="navbar" style={{
+      position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
       background: scrolled ? "rgba(5,5,5,0.9)" : "rgba(5,5,5,0.4)",
       backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
       borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "1px solid transparent",
       transition: "all 0.3s ease",
-    }} className="fixed top-0 left-0 right-0 z-50">
-      <div style={{
+    }}>
+      <div className="nav-container" style={{
         maxWidth: 1400,
         margin: "0 auto",
         padding: "0 24px",
         height: 72,
         display: "grid",
-        gridTemplateColumns: "1fr auto 1fr",
         alignItems: "center",
       }}>
         {/* Left — Logo */}
@@ -85,7 +85,7 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
         </div>
 
         {/* Center — Nav Links */}
-        <div className="hidden md:flex" style={{ display: "flex", alignItems: "center", gap: 4, justifySelf: "center" }}>
+        <div className="nav-links" style={{ alignItems: "center", gap: 4, justifySelf: "center" }}>
           {navLinks.map((link) => (
             <a key={link.label} href={link.href} onClick={(e) => handleNavClick(e, link.href)} style={{ padding: "8px 18px", fontSize: 14, fontWeight: 500, color: "#999", borderRadius: 8, transition: "all 0.2s ease" }}
               onMouseEnter={(e) => { e.currentTarget.style.color = "#fff"; e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
@@ -99,7 +99,7 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
         <div style={{ justifySelf: "end", display: "flex", alignItems: "center", gap: 12 }}>
           {publicKey ? (
             <>
-              <span className="hidden sm:block" style={{ fontSize: 13, fontWeight: 500, color: "var(--color-success)", fontFamily: "monospace", padding: "6px 12px", borderRadius: 50, background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)" }}>
+              <span className="nav-address" style={{ fontSize: 13, fontWeight: 500, color: "var(--color-success)", fontFamily: "monospace", padding: "6px 12px", borderRadius: 50, background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.2)" }}>
                 ● {truncateAddress(publicKey)}
               </span>
               <button onClick={onDisconnect} style={{ padding: "10px 20px", fontSize: 14, fontWeight: 600, color: "#fff", borderRadius: 50, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", cursor: "pointer", transition: "all 0.2s ease", fontFamily: "var(--font-family-body)" }}
@@ -110,22 +110,48 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
             </>
           ) : (
             <button onClick={onConnect} disabled={isConnecting} className="btn-primary" style={{ padding: "10px 24px", fontSize: 14, opacity: isConnecting ? 0.6 : 1 }}>
-              {isConnecting ? "Connecting..." : "Create Account"}
+              {isConnecting ? "Connecting..." : "Connect Wallet"}
             </button>
           )}
-          <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: "none", border: "none", color: "#fff", fontSize: 24, cursor: "pointer", padding: 4 }} aria-label="Toggle mobile menu">
+          <button className="nav-hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: "none", border: "none", color: "#fff", fontSize: 24, cursor: "pointer", padding: 4 }} aria-label="Toggle mobile menu">
             {mobileMenuOpen ? "✕" : "☰"}
           </button>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden" style={{ background: "rgba(5,5,5,0.95)", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px" }}>
+        <div className="nav-mobile-menu" style={{ background: "rgba(5,5,5,0.95)", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "16px 24px" }}>
           {navLinks.map((link) => (
             <a key={link.label} href={link.href} onClick={(e) => handleNavClick(e, link.href)} style={{ display: "block", padding: "12px 0", fontSize: 15, fontWeight: 500, color: "#999", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
               {link.label}
             </a>
           ))}
+          <div style={{ marginTop: 14 }}>
+            {publicKey ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onDisconnect();
+                }}
+                className="btn-outline"
+                style={{ width: "100%", justifyContent: "center" }}
+              >
+                Disconnect Wallet
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onConnect();
+                }}
+                disabled={isConnecting}
+                className="btn-primary"
+                style={{ width: "100%", justifyContent: "center", opacity: isConnecting ? 0.6 : 1 }}
+              >
+                {isConnecting ? "Connecting..." : "Connect Wallet"}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </nav>
