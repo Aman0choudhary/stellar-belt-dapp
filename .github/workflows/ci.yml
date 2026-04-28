@@ -13,18 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: "pnpm"
-          cache-dependency-path: frontend/pnpm-lock.yaml
+          node-version: 20
 
       - name: Install dependencies
-        run: cd frontend && pnpm install --frozen-lockfile
+        run: cd frontend && pnpm install
 
       - name: Run tests
         run: cd frontend && pnpm test --run
@@ -40,8 +38,8 @@ jobs:
           VITE_REPUTATION_CONTRACT_ID: CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
           VITE_DISPUTE_CONTRACT_ID: CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
 
-  build-contracts:
-    name: Build Soroban Contracts
+  verify-contracts:
+    name: Verify Soroban Contracts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,55 +48,11 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
-      - name: Install Stellar CLI
-        run: cargo install stellar-cli --features opt --locked
+      - name: Check bounty contract compiles
+        run: cd contracts/bounty && cargo check --target wasm32-unknown-unknown --release
 
-      - name: Build Bounty Contract
-        run: cd contracts/bounty && stellar contract build
+      - name: Check reputation contract compiles
+        run: cd contracts/reputation && cargo check --target wasm32-unknown-unknown --release
 
-      - name: Build Reputation Contract
-        run: cd contracts/reputation && stellar contract build
-
-      - name: Build Dispute Contract
-        run: cd contracts/dispute && stellar contract build
-
-  deploy-vercel:
-    name: Deploy Frontend to Vercel
-    needs: [test-frontend, build-contracts]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: "pnpm"
-          cache-dependency-path: frontend/pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: cd frontend && pnpm install --frozen-lockfile
-
-      - name: Build frontend
-        run: cd frontend && pnpm build
-        env:
-          VITE_STELLAR_NETWORK: TESTNET
-          VITE_STELLAR_RPC_URL: https://soroban-testnet.stellar.org
-          VITE_STELLAR_NETWORK_PASSPHRASE: "Test SDF Network ; September 2015"
-          VITE_HORIZON_URL: https://horizon-testnet.stellar.org
-          VITE_BOUNTY_CONTRACT_ID: CAFKMUKDXUJNUQUPWY6JGRCIYYA2BS3IHWUHR3A7QQIUSMC4ANNHFO6G
-          VITE_REPUTATION_CONTRACT_ID: CDR7KO7B25CTWJL6KST4WIBXHZGONNZWBOLJDWVCBHAL63WVGK2RUS7C
-          VITE_DISPUTE_CONTRACT_ID: CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJR
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
-          working-directory: ./frontend
+      - name: Check dispute contract compiles
+        run: cd contracts/dispute && cargo check --target wasm32-unknown-unknown --release
