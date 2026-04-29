@@ -14,6 +14,7 @@ import BountyForm from "./BountyForm";
 import ProofSubmitModal from "./ProofSubmitModal";
 import ActivityFeed from "./ActivityFeed";
 import ReputationBadge from "./ReputationBadge";
+import { useEventToasts } from "./Toast";
 import { TX_STEP_LABELS, type TxStep } from "../hooks/useTxStatus";
 
 type FilterKey = "ALL" | "MY_POSTED" | "MY_CLAIMS" | "HISTORY";
@@ -67,6 +68,7 @@ export default function Dashboard({
   const contractId = getBountyContractId();
   const counterContractId = getCounterContractId();
   const events = useContractEvents(contractId);
+  useEventToasts(events, publicKey);
   const [activeFilter, setActiveFilter] = useState<FilterKey>("ALL");
   const [sortBy, setSortBy] = useState<SortKey>("NEWEST");
   const [category, setCategory] = useState<CategoryKey>("ALL");
@@ -332,14 +334,19 @@ export default function Dashboard({
                   <div
                     style={{
                       marginTop: 16,
-                      padding: 14,
+                      padding: "10px 16px",
                       borderRadius: 12,
-                      border: "1px solid rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(255,255,255,0.06)",
                       background: "rgba(255,255,255,0.02)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      flexWrap: "wrap",
                     }}
                   >
-                    <div style={{ marginBottom: 10, color: "#999", fontSize: 13 }}>
-                      Connect a wallet to post, claim, and submit proof.
+                    <div style={{ color: "#777", fontSize: 13 }}>
+                      👀 Browsing as guest — connect to post or claim
                     </div>
                     <WalletButton
                       publicKey={publicKey}
@@ -525,16 +532,16 @@ export default function Dashboard({
                       ))}
                     </div>
                   ) : (
-                    <div className="empty-panel" style={{ minHeight: 240 }}>
-                      <div>
-                        <h3 style={{ color: "#fff", marginBottom: 8 }}>No bounties match this view.</h3>
-                        <p>
-                          {publicKey
-                            ? "Post the first one from this wallet or switch the filter."
-                            : "Connect a wallet to start posting or claiming work."}
-                        </p>
+                      <div className="empty-panel" style={{ minHeight: 240 }}>
+                        <div>
+                          <h3 style={{ color: "#fff", marginBottom: 8 }}>No bounties match this view.</h3>
+                          <p>
+                            {publicKey
+                              ? "Post the first one from this wallet or switch the filter."
+                              : "No bounties posted yet. Connect a wallet to post the first one!"}
+                          </p>
+                        </div>
                       </div>
-                    </div>
                   )}
                 </div>
               </div>
