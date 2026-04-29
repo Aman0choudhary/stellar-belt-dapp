@@ -1,4 +1,5 @@
 import {
+  Account,
   Address,
   BASE_FEE,
   Contract,
@@ -49,7 +50,7 @@ const RPC_URL =
 const BOUNTY_CONTRACT_ID = import.meta.env.VITE_BOUNTY_CONTRACT_ID;
 const READONLY_SOURCE =
   import.meta.env.VITE_READONLY_SOURCE ||
-  "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN";
+  "GBUZGBHUYLBEBYNHGAHXYHAG3H7GXKMIGCY6M5GKFPV3KCWXZUCZRGU5";
 
 const server = new rpc.Server(RPC_URL);
 
@@ -347,10 +348,9 @@ export async function getAllBounties(
   const contract = new Contract(getContractId());
 
   const source = sourcePublicKey || READONLY_SOURCE;
-  // Always fetch the real on-chain account so the sequence number is correct.
-  // Using `new Account(source, "1")` caused simulation failures because the
-  // actual sequence number is far higher than 1.
-  const account = await server.getAccount(source);
+  const account = sourcePublicKey
+    ? await server.getAccount(source)
+    : new Account(source, "1");
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,

@@ -1,4 +1,5 @@
 import {
+  Account,
   Address,
   BASE_FEE,
   Contract,
@@ -14,7 +15,7 @@ const RPC_URL =
 const REPUTATION_CONTRACT_ID = import.meta.env.VITE_REPUTATION_CONTRACT_ID;
 const READONLY_SOURCE =
   import.meta.env.VITE_READONLY_SOURCE ||
-  "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN";
+  "GBUZGBHUYLBEBYNHGAHXYHAG3H7GXKMIGCY6M5GKFPV3KCWXZUCZRGU5";
 
 const server = new rpc.Server(RPC_URL);
 
@@ -47,7 +48,7 @@ function getSigner(): (xdr: string, address?: string) => Promise<string> {
  */
 export async function getScore(hunterAddress: string): Promise<number> {
   try {
-    const account = await server.getAccount(READONLY_SOURCE);
+    const account = new Account(READONLY_SOURCE, "1");
     const contract = new Contract(getContractId());
 
     const tx = new TransactionBuilder(account, {
