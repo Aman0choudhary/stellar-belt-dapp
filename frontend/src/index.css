@@ -1522,3 +1522,20 @@ a {
 .reputation-badge--lg .reputation-badge__emoji { font-size: 20px; }
 .reputation-badge--lg .reputation-badge__tier { font-size: 15px; }
 .reputation-badge--lg .reputation-badge__score { font-size: 13px; }
+
+/* ===== Toast Notifications ===== */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(40px) scale(0.95); }
+}
+
+.toast-enter {
+  animation: toast-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.toast-exit {
+  animation: toast-out 0.25s ease forwards;
+}
