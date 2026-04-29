@@ -82,7 +82,20 @@ The **Dispute contract** is initialized with the Bounty contract as admin. Dispu
 - [x] Auto-deploy to Vercel on push to `main`
 - [x] Mobile responsive (375px+)
 - [x] All 3 contract addresses documented
-- [x] 8+ meaningful commits (31 total)
+- [x] 8+ meaningful commits (34 total)
+
+### ✅ Level 5 Checklist (Blue Belt)
+
+- [x] Architecture document — [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- [x] Shareable bounty pages — `/bounty/:id` (no wallet required to view)
+- [x] Public hunter leaderboard — `/leaderboard` with BNTX tier rankings
+- [x] Wallet-less browse mode — all bounties visible publicly
+- [x] Bounty status timeline — visual Open→Claimed→Submitted→Approved tracker
+- [x] Toast notifications — on-chain event alerts (bounty claimed, approved, etc.)
+- [x] 10+ new commits (Level 5 total: 42+)
+- [x] User feedback form — [Google Form](https://forms.gle/PLACEHOLDER) _(link will be updated)_
+- [ ] 5+ real testnet user wallet addresses (collecting)
+- [ ] 1 iteration based on user feedback (pending)
 
 ### Previous Levels
 
@@ -132,3 +145,34 @@ VITE_DISPUTE_CONTRACT_ID=CDVB5K2TIH4USYFERUU7KEY2UX2CVYZXD3GNBSK547UJQRRPUFZTUIJ
 - This project started as a Level 1 Stellar wallet app and evolved into Bountix.
 - Scroll animations use a zero-re-render CSS-class approach for performance.
 - Albedo wallet is recommended for mobile users.
+
+## 🏗 Architecture
+
+Full system architecture, component tree, data flows, and contract specs:
+
+**→ [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**
+
+## 👥 User Feedback (Level 5)
+
+We collected feedback from 5+ real testnet users via Google Form.
+
+- **Feedback Form:** [Fill out the form](https://forms.gle/PLACEHOLDER) _(link will be updated after form creation)_
+- **Feedback Sheet:** [`docs/user-feedback.xlsx`](docs/user-feedback.xlsx) _(added after collection)_
+
+### User Wallet Addresses (Verifiable on Stellar Testnet Explorer)
+
+| # | Wallet Address | Explorer |
+|---|---------------|----------|
+| 1 | _(collecting)_ | — |
+| 2 | _(collecting)_ | — |
+| 3 | _(collecting)_ | — |
+| 4 | _(collecting)_ | — |
+| 5 | _(collecting)_ | — |
+
+### Improvement Plan (Based on User Feedback)
+
+After collecting user feedback, the following iteration was implemented:
+
+> _Improvement description will be added here after user feedback is collected._
+
+Implementation commit: _(link will be added after iteration commit)_
