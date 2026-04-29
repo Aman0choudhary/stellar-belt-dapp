@@ -1,5 +1,4 @@
 import {
-  Account,
   Address,
   BASE_FEE,
   Contract,
@@ -348,9 +347,10 @@ export async function getAllBounties(
   const contract = new Contract(getContractId());
 
   const source = sourcePublicKey || READONLY_SOURCE;
-  const account = sourcePublicKey
-    ? await server.getAccount(source)
-    : new Account(source, "1");
+  // Always fetch the real on-chain account so the sequence number is correct.
+  // Using `new Account(source, "1")` caused simulation failures because the
+  // actual sequence number is far higher than 1.
+  const account = await server.getAccount(source);
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
