@@ -37,7 +37,7 @@ const STATUS_COLOR: Record<BountyItem["status"], string> = {
 export default function BountyDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { publicKey, walletName, isConnecting, error, connect, disconnect } = useWallet();
+  const { publicKey, isConnecting, connect, disconnect } = useWallet();
   const bounty = useBounties(publicKey);
   const [item, setItem] = useState<BountyItem | null>(null);
   const [copied, setCopied] = useState(false);
@@ -68,7 +68,6 @@ export default function BountyDetail() {
   const isPoster = item?.poster === publicKey;
   const isHunter = item?.hunter === publicKey;
   const canClaim = item?.status === "OPEN" && publicKey && !isPoster;
-  const canSubmit = item?.status === "CLAIMED" && isHunter;
   const canApprove = item?.status === "SUBMITTED" && isPoster;
 
   const statusColor = item ? STATUS_COLOR[item.status] : "#555";

@@ -30,7 +30,6 @@ export default function BountyTimeline({ status, compact = false }: BountyTimeli
   const currentIdx = STATUS_ORDER[status] ?? 0;
   const isTerminal = status === "APPROVED" || status === "REJECTED" || status === "CANCELLED" || status === "EXPIRED";
   const isNegative = status === "REJECTED" || status === "CANCELLED" || status === "EXPIRED";
-  const isDisputed = status === "REJECTED";
 
   if (compact) {
     return (
@@ -80,9 +79,7 @@ export default function BountyTimeline({ status, compact = false }: BountyTimeli
           const done = i < currentIdx || (i === currentIdx && isTerminal && !isNegative);
           const active = i === currentIdx && !isTerminal;
           const failed = i === currentIdx && isNegative;
-          const future = i > currentIdx;
 
-          const dotColor = done ? "#34d399" : active ? "#818cf8" : failed ? "#f87171" : "#2a2a2a";
           const dotBorder = done ? "#34d399" : active ? "#818cf8" : failed ? "#f87171" : "#333";
           const lineColor = done ? "#34d399" : "#222";
 

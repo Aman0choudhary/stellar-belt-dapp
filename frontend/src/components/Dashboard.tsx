@@ -68,7 +68,13 @@ export default function Dashboard({
   const contractId = getBountyContractId();
   const counterContractId = getCounterContractId();
   const events = useContractEvents(contractId);
-  useEventToasts(events, publicKey);
+  // Map ContractEventItem to the shape useEventToasts expects
+  const toastEvents = events.map((e) => ({
+    type: e.topic,
+    bountyId: e.actor ? parseInt(e.actor) || undefined : undefined,
+    timestamp: e.ledger,
+  }));
+  useEventToasts(toastEvents, publicKey);
   const [activeFilter, setActiveFilter] = useState<FilterKey>("ALL");
   const [sortBy, setSortBy] = useState<SortKey>("NEWEST");
   const [category, setCategory] = useState<CategoryKey>("ALL");
