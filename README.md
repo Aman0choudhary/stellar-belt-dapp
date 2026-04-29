@@ -93,7 +93,7 @@ The **Dispute contract** is initialized with the Bounty contract as admin. Dispu
 - [x] Bounty status timeline — visual Open→Claimed→Submitted→Approved tracker
 - [x] Toast notifications — on-chain event alerts (bounty claimed, approved, etc.)
 - [x] 10+ new commits (Level 5 total: 42+)
-- [x] User feedback form — [Google Form](https://forms.gle/PLACEHOLDER) _(link will be updated)_
+- [x] User feedback form — [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdA-iL2L7Im1r1adt2wP02eET6n4Tv742Nv1zyOEcudNepGfQ/viewform) _(responses being collected)_
 - [ ] 5+ real testnet user wallet addresses (collecting)
 - [ ] 1 iteration based on user feedback (pending)
 
@@ -156,7 +156,7 @@ Full system architecture, component tree, data flows, and contract specs:
 
 We collected feedback from 5+ real testnet users via Google Form.
 
-- **Feedback Form:** [Fill out the form](https://forms.gle/PLACEHOLDER) _(link will be updated after form creation)_
+- **Feedback Form:** [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdA-iL2L7Im1r1adt2wP02eET6n4Tv742Nv1zyOEcudNepGfQ/viewform) _(responses being collected)_
 - **Feedback Sheet:** [`docs/user-feedback.xlsx`](docs/user-feedback.xlsx) _(added after collection)_
 
 ### User Wallet Addresses (Verifiable on Stellar Testnet Explorer)
