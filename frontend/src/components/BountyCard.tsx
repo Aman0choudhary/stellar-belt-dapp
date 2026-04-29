@@ -3,6 +3,7 @@ import type { BountyItem } from "../lib/bountyContract";
 import Countdown from "./Countdown";
 import DisputePanel from "./DisputePanel";
 import ReputationBadge from "./ReputationBadge";
+import BountyTimeline from "./BountyTimeline";
 
 interface BountyCardProps {
   bounty: BountyItem;
@@ -300,7 +301,11 @@ export default function BountyCard({
             {bounty.description}
           </p>
 
-          <div style={{ display: "flex", gap: 20, fontSize: 12, flexWrap: "wrap" }}>
+          <div style={{ marginTop: 12 }}>
+            <BountyTimeline status={bounty.status} compact />
+          </div>
+
+          <div style={{ display: "flex", gap: 20, fontSize: 12, flexWrap: "wrap", marginTop: 12 }}>
             <span>
               <span style={{ color: "#888" }}>Poster </span>
               <span style={{ color: "#fff", fontFamily: "monospace" }} title={bounty.poster}>{addr(bounty.poster)}</span>
@@ -332,6 +337,23 @@ export default function BountyCard({
             publicKey={publicKey}
             submittedAt={bounty.status === "SUBMITTED" ? bounty.createdAt : undefined}
           />
+
+          {/* View Details / Share link */}
+          <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+            <a
+              href={`/bounty/${bounty.id}`}
+              onClick={(e) => { e.preventDefault(); window.open(`/bounty/${bounty.id}`, "_self"); }}
+              style={{
+                fontSize: 12, color: "#555", textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: 5,
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#aaa"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#555"; }}
+            >
+              🔗 View & Share Bounty #{bounty.id}
+            </a>
+          </div>
         </div>
       )}
     </article>
