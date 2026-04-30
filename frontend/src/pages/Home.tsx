@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useWallet } from "../hooks/useWallet";
 import { useBalance } from "../hooks/useBalance";
 import Navbar from "../components/Navbar";
+import ActivityTicker from "../components/ActivityTicker";
 import Hero from "../components/Hero";
 import Partners from "../components/Partners";
 import Features from "../components/Features";
@@ -27,6 +28,7 @@ export default function Home() {
         onConnect={connect}
         onDisconnect={disconnect}
       />
+      <ActivityTicker />
       <main>
         <Hero />
         <Partners />
