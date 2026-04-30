@@ -164,10 +164,15 @@ We collected feedback from 5+ real testnet users via Google Form.
 | # | Wallet Address | Explorer |
 |---|---------------|----------|
 | 1 | GDTHCQCXP3...PE8CHQ | [View](https://stellar.expert/explorer/testnet) |
-| 2 | GA46DHMYDI...LYUFQD | [View](https://stellar.expert/explorer/testnet) |
-| 3 | GBHTE52C4S...DFSNAW | [View](https://stellar.expert/explorer/testnet) |
-| 4 | GBRKFHRDLZ...PTPEHE | [View](https://stellar.expert/explorer/testnet) |
-| 5 | GC8PMXGTXH...QC7JIM | [View](https://stellar.expert/explorer/testnet) |
+| 2 | GCD63E3RAE...RF6S3B | [View](https://stellar.expert/explorer/testnet) |
+| 3 | GCMARDRSUW...6TQ4RH | [View](https://stellar.expert/explorer/testnet) |
+| 4 | GA46DHWYDD...LYUFQD | [View](https://stellar.expert/explorer/testnet) |
+| 5 | GC2GTBBXHA...GBGAIL | [View](https://stellar.expert/explorer/testnet) |
+| 6 | GBHTE52C4S...DFSNAW | [View](https://stellar.expert/explorer/testnet) |
+| 7 | GBRKFHRDLZ...PTPEHE | [View](https://stellar.expert/explorer/testnet) |
+| 8 | GC8PMXGTXH...QC7JIM | [View](https://stellar.expert/explorer/testnet) |
+| 9 | GA4Q44J42F...VMSVYU | [View](https://stellar.expert/explorer/testnet) |
+| 10 | GDA2XQSNGE...3JDK45 | [View](https://stellar.expert/explorer/testnet) |
 
 ### Improvement Plan (Based on User Feedback)
 
