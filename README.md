@@ -156,8 +156,8 @@ Full system architecture, component tree, data flows, and contract specs:
 
 We collected feedback from 5+ real testnet users via Google Form.
 
-- **Feedback Form:** [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdA-iL2L7Im1r1adt2wP02eET6n4Tv742Nv1zyOEcudNepGfQ/viewform) _(responses being collected)_
-- **Feedback Sheet:** [`docs/user-feedback.xlsx`](docs/user-feedback.xlsx) _(added after collection)_
+- **Feedback Form:** [Fill out the form](https://docs.google.com/forms/d/e/1FAIpQLSdA-iL2L7Im1r1adt2wP02eET6n4Tv742Nv1zyOEcudNepGfQ/viewform)
+- **Feedback Sheet:** [View Google Sheet Responses](https://docs.google.com/spreadsheets/d/1e6nXoQzk__4-p7IvGcO288ok4WgjsBqPzYe3iDkfVpw/edit?usp=sharing) (Local copy: [`docs/user-feedback.xlsx`](docs/user-feedback.xlsx))
 
 ### User Wallet Addresses (Verifiable on Stellar Testnet Explorer)
 
