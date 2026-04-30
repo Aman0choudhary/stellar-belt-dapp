@@ -183,4 +183,7 @@ After collecting user feedback from 7 testnet users via Google Forms, the overal
 - The UI/UX for the leaderboard and real-time toast notifications were well received.
 
 **Iteration Decision:**
-Based on the overwhelmingly positive feedback and the successful testing of all core flows, we have determined that the current implementation of the Bountix platform fully satisfies the Blue Belt requirements without the need for an immediate hotfix or iteration.
+Based on the feedback, users found it slightly tedious to manually scroll and look for their specific address on the leaderboard as the number of hunters grew.
+
+**Final Iteration Built:**
+- **Leaderboard Address Search:** We implemented a real-time search input directly on the Leaderboard page. Hunters can now instantly paste or type their address to filter the leaderboard and find their exact rank and BNTX score without scrolling.

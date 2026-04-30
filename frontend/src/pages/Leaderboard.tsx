@@ -31,6 +31,7 @@ export default function Leaderboard() {
   const [hunters, setHunters] = useState<HunterEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -157,6 +158,33 @@ export default function Leaderboard() {
             ))}
           </div>
 
+          {/* Search bar */}
+          {!loading && !error && hunters.length > 0 && (
+            <div style={{ marginBottom: 20, display: "flex", justifyContent: "flex-end" }}>
+              <div style={{ position: "relative", width: "100%", maxWidth: 300 }}>
+                <span style={{ position: "absolute", left: 14, top: 10, color: "#666" }}>🔍</span>
+                <input
+                  type="text"
+                  placeholder="Search by address..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px 10px 40px",
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    color: "#fff",
+                    fontSize: 14,
+                    outline: "none",
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "rgba(129,140,248,0.5)")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.08)")}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Table */}
           <div style={{
             background: "rgba(255,255,255,0.02)",
@@ -226,7 +254,9 @@ export default function Leaderboard() {
             )}
 
             {/* Real data rows */}
-            {!loading && !error && hunters.map((h, i) => {
+            {!loading && !error && hunters
+              .filter(h => h.address.toLowerCase().includes(searchQuery.toLowerCase()))
+              .map((h, i) => {
               const isCurrentUser = publicKey === h.address;
               return (
                 <div
