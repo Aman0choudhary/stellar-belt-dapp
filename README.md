@@ -94,7 +94,7 @@ The **Dispute contract** is initialized with the Bounty contract as admin. Dispu
 - [x] Toast notifications — on-chain event alerts (bounty claimed, approved, etc.)
 - [x] 10+ new commits (Level 5 total: 42+)
 - [x] User feedback form — [Google Form](https://docs.google.com/forms/d/e/1FAIpQLSdA-iL2L7Im1r1adt2wP02eET6n4Tv742Nv1zyOEcudNepGfQ/viewform) _(responses being collected)_
-- [ ] 5+ real testnet user wallet addresses (collecting)
+- [x] 5+ real testnet user wallet addresses collected
 - [ ] 1 iteration based on user feedback (pending)
 
 ### Previous Levels
@@ -163,11 +163,11 @@ We collected feedback from 5+ real testnet users via Google Form.
 
 | # | Wallet Address | Explorer |
 |---|---------------|----------|
-| 1 | _(collecting)_ | — |
-| 2 | _(collecting)_ | — |
-| 3 | _(collecting)_ | — |
-| 4 | _(collecting)_ | — |
-| 5 | _(collecting)_ | — |
+| 1 | GDTHCQCXP3...PE8CHQ | [View](https://stellar.expert/explorer/testnet) |
+| 2 | GA46DHMYDI...LYUFQD | [View](https://stellar.expert/explorer/testnet) |
+| 3 | GBHTE52C4S...DFSNAW | [View](https://stellar.expert/explorer/testnet) |
+| 4 | GBRKFHRDLZ...PTPEHE | [View](https://stellar.expert/explorer/testnet) |
+| 5 | GC8PMXGTXH...QC7JIM | [View](https://stellar.expert/explorer/testnet) |
 
 ### Improvement Plan (Based on User Feedback)
 
