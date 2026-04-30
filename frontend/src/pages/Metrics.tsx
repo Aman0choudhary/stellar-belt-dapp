@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 import { 
-  LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+  LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer 
 } from "recharts";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useWallet } from "../hooks/useWallet";
 import { useBounties } from "../hooks/useBounties";
-import { BountyItem } from "../lib/bountyContract";
 
 const COLORS = ["#10b981", "#fbbf24", "#818cf8", "#f87171", "#6b7280"];
 
