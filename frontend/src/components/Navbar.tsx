@@ -29,6 +29,7 @@ export default function Navbar({ publicKey, isConnecting, onConnect, onDisconnec
     { label: "Pools", href: "#pools" },
     { label: "FAQ", href: "#faq" },
     { label: "Leaderboard", href: "/leaderboard" },
+    { label: "Metrics", href: "/metrics" },
     { label: "My Dashboard", href: "/my-dashboard" },
   ];
 
