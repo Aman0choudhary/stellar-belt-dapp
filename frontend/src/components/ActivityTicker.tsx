@@ -1,34 +1,32 @@
-import { useEffect, useState } from "react";
-import { useContractEvents } from "../hooks/useContractEvents";
+import { useMemo } from "react";
+import { useBounties } from "../hooks/useBounties";
+import { useWallet } from "../hooks/useWallet";
 
 export default function ActivityTicker() {
-  const { events } = useContractEvents();
-  const [tickerItems, setTickerItems] = useState<string[]>([]);
+  const { publicKey } = useWallet();
+  const { bounties } = useBounties(publicKey);
 
-  useEffect(() => {
-    // Generate ticker items from recent events or use fallbacks if empty
-    if (events.length > 0) {
-      const items = events.slice(0, 10).map((e) => {
-        const typeIcon =
-          e.type === "BountyCreated" ? "✨" :
-          e.type === "BountyClaimed" ? "🎯" :
-          e.type === "ProofSubmitted" ? "📝" :
-          e.type === "BountyApproved" ? "✅" :
-          e.type === "ReputationAwarded" ? "🏆" : "🔔";
-        
-        return `${typeIcon} Bounty #${e.bountyId}: ${e.type} at ${new Date(e.timestamp).toLocaleTimeString()}`;
+  const tickerItems = useMemo(() => {
+    if (bounties.length > 0) {
+      return bounties.slice(0, 10).map((b) => {
+        const icon =
+          b.status === "OPEN" ? "✨" :
+          b.status === "CLAIMED" ? "🎯" :
+          b.status === "SUBMITTED" ? "📝" :
+          b.status === "APPROVED" ? "✅" :
+          b.status === "REJECTED" ? "❌" : "🔔";
+        const addr = b.poster ? `${b.poster.slice(0, 6)}...${b.poster.slice(-4)}` : "Unknown";
+        return `${icon} Bounty #${b.id} "${b.title}" by ${addr} — ${b.rewardXlm} XLM`;
       });
-      setTickerItems(items);
-    } else {
-      setTickerItems([
-        "🚀 Bountix Level 6 is Live on Stellar Testnet!",
-        "🎯 Claim your first bounty today to earn XLM.",
-        "🏆 Build your on-chain reputation score.",
-        "⚡ Gasless transactions powered by fee-bumping.",
-        "✅ Fast, trustless payouts via Soroban smart contracts."
-      ]);
     }
-  }, [events]);
+    return [
+      "🚀 Bountix Level 6 is Live on Stellar Testnet!",
+      "🎯 Claim your first bounty today to earn XLM.",
+      "🏆 Build your on-chain reputation score.",
+      "⚡ Gasless transactions powered by fee-bumping.",
+      "✅ Fast, trustless payouts via Soroban smart contracts."
+    ];
+  }, [bounties]);
 
   return (
     <div style={{
